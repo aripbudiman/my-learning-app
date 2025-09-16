@@ -16,7 +16,7 @@
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="/courses" class="text-gray-700 hover:text-blue-600 font-medium transition">Kursus</a>
-                    <a href="#exercises" class="text-gray-700 hover:text-blue-600 font-medium transition">Latihan</a>
+                    <a href="/exercises" class="text-gray-700 hover:text-blue-600 font-medium transition">Latihan</a>
                     <a href="#progress" class="text-gray-700 hover:text-blue-600 font-medium transition">Progres</a>
                     <a href="#features" class="text-gray-700 hover:text-blue-600 font-medium transition">Fitur</a>
                     <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
