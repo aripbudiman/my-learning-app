@@ -16,8 +16,11 @@
         "install:all": "bun install"
     },
     "devDependencies": {
+        "@vue/devtools": "^8.0.2",
         "autoprefixer": "^10.4.16",
         "concurrently": "^9.2.1",
+        "daisyui": "3.9.4",
+        "i": "^0.3.7",
         "postcss": "^8.4.32",
         "tailwindcss": "^3.4.0",
         "ts-node": "^10.9.2"

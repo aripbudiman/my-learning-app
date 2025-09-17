@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        erieblack:"#111827",
+        persimmon: "#EA580C",
+        blueviolet:"#9333EA",
+        paleviolet:"#c084fc",
+        greenpigment:"#16A34A",
+        emerald:"#4ADE80",
+        crayola:"#2563EB"
+      },
+    },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 }

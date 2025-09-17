@@ -3,4 +3,13 @@ import App from './App.vue'
 import './style.css'
 import router from './router'
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App)
+// Untuk standalone devtools
+if (process.env.NODE_ENV === 'development') {
+    const script = document.createElement('script')
+    script.src = 'http://localhost:8098'
+    document.head.appendChild(script)
+}
+
+app.use(router);
+app.mount('#app')
