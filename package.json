@@ -11,22 +11,35 @@
         "dev:backend": "cd backend && bun run dev",
         "dev:frontend": "cd frontend && bun run dev",
         "build": "bun run build:backend && bun run build:frontend",
-        "build:backend": "cd backend && bun run build",
+        "build:backend": "cd backend && NODE_ENV=production bun build --compile --minify --bytecode --sourcemap cmd/server/api-server.ts --outfile=dist/server",
         "build:frontend": "cd frontend && bun run build",
-        "install:all": "bun install"
+        "install:all": "bun install",
+        "prepare": "husky"
     },
     "devDependencies": {
+        "@commitlint/cli": "^19.8.1",
+        "@commitlint/config-conventional": "^19.8.1",
+        "@eslint/js": "^9.35.0",
         "@vue/devtools": "^8.0.2",
         "autoprefixer": "^10.4.16",
         "concurrently": "^9.2.1",
         "daisyui": "3.9.4",
+        "eslint": "^9.35.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "globals": "^16.4.0",
         "i": "^0.3.7",
+        "jiti": "^2.5.1",
+        "lint-staged": "^16.1.6",
         "postcss": "^8.4.32",
+        "prettier": "^3.6.2",
         "tailwindcss": "^3.4.0",
-        "ts-node": "^10.9.2"
+        "ts-node": "^10.9.2",
+        "typescript-eslint": "^8.44.0"
     },
     "dependencies": {
         "@prisma/client": "^6.16.1",
+        "husky": "^9.1.7",
         "vue-router": "^4.5.1"
     }
 }

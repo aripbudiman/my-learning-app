@@ -1,0 +1,10 @@
+import { Course, CourseCreate } from '@lib/model/course.model'
+import { CourseRepository } from '@lib/outbound/repository/contract/contract.repository'
+import database from '@lib/config/database'
+
+export class MySqlCourseRepository implements CourseRepository {
+  async create(data: CourseCreate): Promise<Course> {
+    const course: Course = await database.courses.create({ data })
+    return course
+  }
+}

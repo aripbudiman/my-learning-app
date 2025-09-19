@@ -17,6 +17,13 @@
     "allowJs": true,
     "types": [
       "bun-types"
-    ]
+    ],
+    "paths": {
+      "@lib/*":["./lib/*"],
+      "@inbound/*":["./lib/inbound/*"],
+      "@services/*":["./lib/services/*"],
+      "@model/*":["./lib/model/*"],
+      "@config/*":["./lib/config/*"]
+    }
   }
 }

@@ -1,0 +1,5 @@
+
+# bun test
+bunx lint-staged
+bunx tsc --noEmit
+# bun run test

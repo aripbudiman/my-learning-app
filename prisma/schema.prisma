@@ -14,16 +14,112 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
+model courses {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String      @db.Text
+  level       CourseLevel
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  modules     modules[]
 }
 
-model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  profile Profile?
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model modules {
+  id             Int         @id @default(autoincrement())
+  courses        courses?    @relation(fields: [coursesId], references: [id])
+  coursesId      Int?
+  title          String
+  order_index    Int
+  estimated_time Int
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  lessons        lessons[]
+  exercises      exercises[]
+}
+
+model lessons {
+  id            Int             @id @default(autoincrement())
+  module_id     Int
+  modules       modules?        @relation(fields: [module_id], references: [id])
+  title         String
+  content       String          @db.LongText
+  exercise_code String          @db.LongText
+  order_index   Int
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  user_progress user_progress[]
+}
+
+model exercises {
+  id              Int            @id @default(autoincrement())
+  module_id       Int
+  modules         modules?       @relation(fields: [module_id], references: [id])
+  level           ExercisesLevel
+  question        String         @db.Text
+  hint            String         @db.Text
+  solution        String         @db.Text
+  exercise_type   ExercisesType
+  expected_output String         @db.Text
+  submissions     submissions[]
+}
+
+enum ExercisesType {
+  MULTIPLE_CHOICE
+  CODING
+  BOOLEAN
+}
+
+enum ExercisesLevel {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model users {
+  id            Int             @id
+  name          String
+  email         String
+  password_hash String
+  role          Roles
+  user_progress user_progress[]
+  submissions   submissions[]
+}
+
+enum Roles {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+model user_progress {
+  id           Int      @id
+  user_id      Int?
+  user         users?   @relation(fields: [user_id], references: [id])
+  lessons_id   Int
+  lessons      lessons  @relation(fields: [lessons_id], references: [id])
+  status       Status
+  completed_at DateTime
+}
+
+enum Status {
+  COMPLETED
+  IN_PROGRESS
+  NOT_STARTED
+}
+
+model submissions {
+  id             Int       @id
+  exercise_id    Int
+  exercise       exercises @relation(fields: [exercise_id], references: [id])
+  user_id        Int?
+  user           users?    @relation(fields: [user_id], references: [id])
+  submitted_code String    @db.Text
+  is_correct     Boolean
+  submitted_at   DateTime
 }
