@@ -21,3 +21,12 @@ export const courseSchema = t.Object({
   createdAt: t.Optional(t.Date()),
   updatedAt: t.Optional(t.Date()),
 })
+
+export const courseResponseSchema = t.Object({
+  id: t.Integer(),
+  name: t.String(),
+  description: t.String(),
+  level: t.Enum(CourseLevel),
+  createdAt: t.Optional(t.Date()),
+  updatedAt: t.Optional(t.Date()),
+})
