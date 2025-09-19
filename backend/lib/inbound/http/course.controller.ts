@@ -1,6 +1,6 @@
 import Elysia from 'elysia'
 import { courseService } from '@lib/config/registry'
-import { Course, courseSchema } from '@lib/model/course.model'
+import { Course, courseSchema } from '@lib/models/course.model'
 import { wrapResponse } from '@lib/utils/response'
 
 export const courseController = new Elysia({ prefix: '/api/courses' }).decorate('courseService', courseService).post(

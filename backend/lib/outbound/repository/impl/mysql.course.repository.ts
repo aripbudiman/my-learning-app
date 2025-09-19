@@ -1,4 +1,4 @@
-import { Course, CourseCreate } from '@lib/model/course.model'
+import { Course, CourseCreate } from '@lib/models/course.model'
 import { CourseRepository } from '@lib/outbound/repository/contract/contract.repository'
 import database from '@lib/config/database'
 
