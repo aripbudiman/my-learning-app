@@ -1,11 +1,6 @@
 import { t } from 'elysia'
 import { CourseLevel } from '@prisma/client'
 export { CourseLevel }
-// export enum CourseLevel {
-//     BEGINNER = "BEGINNER",
-//     INTERMEDIATE = "INTERMEDIATE",
-//     ADVANCED = "ADVANCED"
-// }
 
 export interface Course {
   id: number

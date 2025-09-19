@@ -1,5 +1,5 @@
 import Elysia from 'elysia'
-import { courseService } from '@lib/config/registry'
+import { courseService } from '@lib/configs/registry'
 import { Course, courseSchema } from '@lib/models/course.model'
 import { wrapResponse } from '@lib/utils/response'
 
