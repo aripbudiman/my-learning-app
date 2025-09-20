@@ -37,22 +37,22 @@ model modules {
   title         String
   orderIndex    Int         @map("order_index")
   estimatedTime Int         @map("estimated_time")
-  createdAt     DateTime    @default(now()) @map("createdAt")
-  updatedAt     DateTime    @updatedAt @map("updatedAt")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
   lessons       lessons[]
   exercises     exercises[]
 }
 
 model lessons {
   id            Int             @id @default(autoincrement())
-  module_id     Int
-  modules       modules?        @relation(fields: [module_id], references: [id])
+  moduleId      Int             @map("module_id")
+  modules       modules?        @relation(fields: [moduleId], references: [id])
   title         String
   content       String          @db.LongText
-  exercise_code String          @db.LongText
-  order_index   Int
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
+  exerciseCode  String          @map("exercise_code") @db.LongText
+  orderIndex    Int             @map("order_index")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
   user_progress user_progress[]
 }
 
