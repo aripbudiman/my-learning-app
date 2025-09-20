@@ -57,16 +57,16 @@ model lessons {
 }
 
 model exercises {
-  id              Int            @id @default(autoincrement())
-  module_id       Int
-  modules         modules?       @relation(fields: [module_id], references: [id])
-  level           ExercisesLevel
-  question        String         @db.Text
-  hint            String         @db.Text
-  solution        String         @db.Text
-  exercise_type   ExercisesType
-  expected_output String         @db.Text
-  submissions     submissions[]
+  id             Int            @id @default(autoincrement())
+  moduleId       Int            @map("module_id")
+  modules        modules?       @relation(fields: [moduleId], references: [id])
+  level          ExercisesLevel
+  question       String         @db.Text
+  hint           String         @db.Text
+  solution       String         @db.Text
+  exerciseType   ExercisesType  @map("exercise_type")
+  expectedOutput String         @map("expected_output") @db.Text
+  submissions    submissions[]
 }
 
 enum ExercisesType {
@@ -85,7 +85,7 @@ model users {
   id            Int             @id
   name          String
   email         String
-  password_hash String
+  passwordHash  String          @map("password_hash")
   role          Roles
   user_progress user_progress[]
   submissions   submissions[]
@@ -98,13 +98,13 @@ enum Roles {
 }
 
 model user_progress {
-  id           Int      @id
-  user_id      Int?
-  user         users?   @relation(fields: [user_id], references: [id])
-  lessons_id   Int
-  lessons      lessons  @relation(fields: [lessons_id], references: [id])
-  status       Status
-  completed_at DateTime
+  id          Int      @id
+  userId      Int?     @map("user_id")
+  user        users?   @relation(fields: [userId], references: [id])
+  lessonsId   Int      @map("lessons_id")
+  lessons     lessons  @relation(fields: [lessonsId], references: [id])
+  status      Status
+  completedAt DateTime @map("completed_at")
 }
 
 enum Status {
@@ -114,12 +114,12 @@ enum Status {
 }
 
 model submissions {
-  id             Int       @id
-  exercise_id    Int
-  exercise       exercises @relation(fields: [exercise_id], references: [id])
-  user_id        Int?
-  user           users?    @relation(fields: [user_id], references: [id])
-  submitted_code String    @db.Text
-  is_correct     Boolean
-  submitted_at   DateTime
+  id            Int       @id
+  exerciseId    Int       @map("exercise_id")
+  exercise      exercises @relation(fields: [exerciseId], references: [id])
+  userId        Int?      @map("user_id")
+  user          users?    @relation(fields: [userId], references: [id])
+  submittedCode String    @map("submitted_code") @db.Text
+  isCorrect     Boolean   @map("is_correct")
+  submittedAt   DateTime  @map("submitted_at")
 }
