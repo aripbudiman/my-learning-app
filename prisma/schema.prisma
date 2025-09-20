@@ -31,16 +31,16 @@ enum CourseLevel {
 }
 
 model modules {
-  id             Int         @id @default(autoincrement())
-  courses        courses?    @relation(fields: [coursesId], references: [id])
-  coursesId      Int?
-  title          String
-  order_index    Int
-  estimated_time Int
-  created_at     DateTime    @default(now())
-  updated_at     DateTime    @updatedAt
-  lessons        lessons[]
-  exercises      exercises[]
+  id            Int         @id @default(autoincrement())
+  courseId      Int?        @map("course_id")
+  courses       courses?    @relation(fields: [courseId], references: [id])
+  title         String
+  orderIndex    Int         @map("order_index")
+  estimatedTime Int         @map("estimated_time")
+  createdAt     DateTime    @default(now()) @map("createdAt")
+  updatedAt     DateTime    @updatedAt @map("updatedAt")
+  lessons       lessons[]
+  exercises     exercises[]
 }
 
 model lessons {

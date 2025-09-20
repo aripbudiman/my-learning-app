@@ -14,7 +14,8 @@
         "build:backend": "cd backend && NODE_ENV=production bun build --compile --minify --bytecode --sourcemap cmd/server/api-server.ts --outfile=dist/server",
         "build:frontend": "cd frontend && bun run build",
         "install:all": "bun install",
-        "prepare": "husky"
+        "prepare": "husky",
+        "migrate": "npx prisma migrate dev --name"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.8.1",
