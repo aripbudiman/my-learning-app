@@ -30,3 +30,7 @@ export const courseResponseSchema = t.Object({
   createdAt: t.Optional(t.Date()),
   updatedAt: t.Optional(t.Date()),
 })
+
+export const paramsSchema = t.Object({
+  id: t.Number(),
+})

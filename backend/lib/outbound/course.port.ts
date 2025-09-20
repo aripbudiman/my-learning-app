@@ -5,5 +5,5 @@ export interface CoursePort {
   update(id: number, data: CourseCreate): Promise<Course>
   delete(id: number): Promise<void>
   find(id: number): Promise<Course | null>
-  findAll(): Promise<Course[]>
+  findAll(page: number, limit: number): Promise<Course[]>
 }

@@ -1,6 +1,6 @@
 import Elysia, { t } from 'elysia'
 import { courseService } from '@lib/configs/registry'
-import { Course, courseSchema, courseResponseSchema } from '@lib/models/course.model'
+import { Course, courseSchema, courseResponseSchema, paramsSchema } from '@lib/models/course.model'
 import { wrapResponse } from '@lib/utils/response'
 import { createResponseSchema } from '@lib/utils/schema'
 
@@ -27,9 +27,7 @@ export const courseController = new Elysia({ prefix: '/api/courses' })
       return wrapResponse(response, 200, 'Get course successfully')
     },
     {
-      params: t.Object({
-        id: t.Number(),
-      }),
+      params: paramsSchema,
       response: {
         200: createResponseSchema(courseResponseSchema),
         400: createResponseSchema(t.Null()),
@@ -44,11 +42,36 @@ export const courseController = new Elysia({ prefix: '/api/courses' })
     },
     {
       body: courseSchema,
-      params: t.Object({
-        id: t.Number(),
-      }),
+      params: paramsSchema,
       response: {
         200: createResponseSchema(courseResponseSchema),
+        400: createResponseSchema(t.Null()),
+      },
+    }
+  )
+  .delete(
+    '/:id',
+    async ({ params, courseService }) => {
+      const response = await courseService.deleteCourse(params.id)
+      return wrapResponse(response, 200, 'Delete course successfully')
+    },
+    {
+      params: paramsSchema,
+      response: {
+        200: createResponseSchema(t.String()),
+        400: createResponseSchema(t.Null()),
+      },
+    }
+  )
+  .get(
+    '/',
+    async ({ courseService }) => {
+      const response = await courseService.getAllCourses()
+      return wrapResponse(response, 200, 'Get all courses successfully')
+    },
+    {
+      response: {
+        200: createResponseSchema(t.Array(courseResponseSchema)),
         400: createResponseSchema(t.Null()),
       },
     }

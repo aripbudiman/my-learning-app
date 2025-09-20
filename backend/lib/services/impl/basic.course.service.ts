@@ -27,6 +27,6 @@ export class BasicCourseService implements CourseSvc {
   }
 
   async getAllCourses(): Promise<Course[]> {
-    return await this.repository.findAll()
+    return await this.repository.findAll(1, 10)
   }
 }

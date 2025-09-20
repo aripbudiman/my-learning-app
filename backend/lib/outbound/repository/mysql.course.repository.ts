@@ -22,8 +22,11 @@ export class MySqlCourseRepository implements CoursePort {
     return course
   }
 
-  async findAll(): Promise<Course[]> {
-    const courses: Course[] = await database.courses.findMany()
+  async findAll(page = 1, limit = 10): Promise<Course[]> {
+    const courses: Course[] = await database.courses.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+    })
     return courses
   }
 }
