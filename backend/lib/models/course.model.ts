@@ -13,6 +13,11 @@ export interface Course {
 
 export type CourseCreate = Omit<Course, 'id' | 'createdAt' | 'updatedAt'>
 
+export interface Query {
+  limit: number
+  page: number
+}
+
 export const courseSchema = t.Object({
   id: t.Optional(t.Integer()),
   name: t.String(),
@@ -33,4 +38,9 @@ export const courseResponseSchema = t.Object({
 
 export const paramsSchema = t.Object({
   id: t.Number(),
+})
+
+export const querySchema = t.Object({
+  limit: t.Number(),
+  page: t.Number(),
 })

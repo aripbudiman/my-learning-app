@@ -1,6 +1,6 @@
 import { ValidationError } from 'elysia'
 import { CourseSvc } from '@lib/services/contract/course.service'
-import { Course } from '@lib/models/course.model'
+import { Course, Query } from '@lib/models/course.model'
 import { CoursePort } from '@lib/outbound/course.port'
 
 export class BasicCourseService implements CourseSvc {
@@ -26,7 +26,7 @@ export class BasicCourseService implements CourseSvc {
     return result
   }
 
-  async getAllCourses(): Promise<Course[]> {
-    return await this.repository.findAll(1, 10)
+  async getAllCourses(query: Query): Promise<Course[]> {
+    return await this.repository.findAll(query.limit, query.page)
   }
 }

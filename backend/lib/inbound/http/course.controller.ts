@@ -1,6 +1,6 @@
 import Elysia, { t } from 'elysia'
 import { courseService } from '@lib/configs/registry'
-import { Course, courseSchema, courseResponseSchema, paramsSchema } from '@lib/models/course.model'
+import { Course, courseSchema, courseResponseSchema, paramsSchema, querySchema } from '@lib/models/course.model'
 import { wrapResponse } from '@lib/utils/response'
 import { createResponseSchema } from '@lib/utils/schema'
 
@@ -65,11 +65,12 @@ export const courseController = new Elysia({ prefix: '/api/courses' })
   )
   .get(
     '/',
-    async ({ courseService }) => {
-      const response = await courseService.getAllCourses()
+    async ({ courseService, query }) => {
+      const response = await courseService.getAllCourses(query)
       return wrapResponse(response, 200, 'Get all courses successfully')
     },
     {
+      query: querySchema,
       response: {
         200: createResponseSchema(t.Array(courseResponseSchema)),
         400: createResponseSchema(t.Null()),
