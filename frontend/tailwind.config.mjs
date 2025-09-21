@@ -13,9 +13,13 @@ export default {
         paleviolet:"#c084fc",
         greenpigment:"#16A34A",
         emerald:"#4ADE80",
-        crayola:"#2563EB"
+        crayola:"#2563EB",
+        card: {
+          foreground: 'var(--card-foreground)',
+          background: 'var(--card-background)',
+        }
       },
     },
   },
-  plugins: [require("daisyui")],
+  plugins: [],
 }
