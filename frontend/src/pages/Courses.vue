@@ -1,5 +1,5 @@
 <script setup>
-import IconCourse from '../icons/IconCourse.vue';
+import IconCourse from '../components/icons/IconCourse.vue';
 </script>
 <template>
     <section class="bg-gradient-to-br from-blue-50 to-indigo-100 py-20 min-h-screen">

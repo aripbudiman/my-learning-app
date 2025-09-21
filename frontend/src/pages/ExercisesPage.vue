@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
-import IconForm from '../icons/IconForm.vue';
-import { datatable } from '../dummy/data/datatable.ts';
-import { dataquestions } from '../dummy/data/dataquestions.ts';
+import IconForm from '../components/icons/IconForm.vue';
+import { datatable } from '../components/dummy/data/datatable.ts';
+import { dataquestions } from '../components/dummy/data/dataquestions.ts';
 const activeTab = ref('datatable')
 const showHint = ref(false);
 const userQuery = ref('');
@@ -38,7 +38,7 @@ const resetQuestion = () => {
 };
 </script>
 <template>
-    <section class="bg-gradient-to-br from-blue-50 to-indigo-100 py-20 min-h-full">
+    <section class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-20 min-h-full">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center space-x-4">
                 <IconForm width="64" height="64"></IconForm>
