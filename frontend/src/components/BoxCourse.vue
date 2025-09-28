@@ -10,7 +10,7 @@ import * as icons from '../assets/icons';
         <div class="flex flex-col space-y-1.5 p-6 pb-3">
             <div
                 class="w-12 h-12 rounded-lg bg-gradient-to-r from-cyan-50 to-cyan-100 flex items-center justify-center text-2xl mb-3">
-                <img :src="icons['bookOpen']" alt="mysql" />
+                <img :src="icons['mysql']" alt="mysql" />
             </div>
             <div class="font-semibold tracking-tight text-xl">HTML &amp; CSS</div>
             <div class="text-sm text-slate-600">Learn the fundamentals of web development with HTML and
