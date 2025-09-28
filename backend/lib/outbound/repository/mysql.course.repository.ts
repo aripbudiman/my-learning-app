@@ -4,12 +4,12 @@ import { CoursePort } from '@lib/outbound/course.port'
 
 export class MySqlCourseRepository implements CoursePort {
     async create(data: CourseCreate): Promise<Course> {
-        const course: Course = await database.courses.create({ data })
+        const course: Course = await database.courses.create({ data: { ...data } })
         return course
     }
 
     async update(id: number, data: CourseCreate): Promise<Course> {
-        const course: Course = await database.courses.update({ where: { id }, data })
+        const course: Course = await database.courses.update({ where: { id }, data: { ...data } })
         return course
     }
 

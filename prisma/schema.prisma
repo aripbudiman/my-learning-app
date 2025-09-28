@@ -19,8 +19,10 @@ model courses {
   name        String
   description String      @db.Text
   level       CourseLevel
-  created_at  DateTime    @default(now())
-  updated_at  DateTime    @updatedAt
+  icon        String
+  colorTheme  String      @map("color_theme")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
   modules     modules[]
 }
 
