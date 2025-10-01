@@ -29,4 +29,9 @@ export class MysqlLessonRepository implements LessonPort {
         })
         return lessons
     }
+
+    async count(): Promise<number> {
+        const count: number = await database.lessons.count()
+        return count
+    }
 }

@@ -29,4 +29,9 @@ export class MysqlModuleRepository implements ModulePort {
         })
         return modules
     }
+
+    async count(): Promise<number> {
+        const count: number = await database.modules.count()
+        return count
+    }
 }

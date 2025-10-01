@@ -6,4 +6,5 @@ export interface LessonPort {
     delete(id: number): Promise<void>
     find(id: number): Promise<Lessons | null>
     findAll(limit: number, page: number): Promise<Lessons[]>
+    count(): Promise<number>
 }
