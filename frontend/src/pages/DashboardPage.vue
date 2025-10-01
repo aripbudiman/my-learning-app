@@ -5,7 +5,9 @@ import BoxCourse from '../components/BoxCourse.vue';
 import BoxAchievement from '../components/BoxAchievement.vue';
 </script>
 <template>
-    <Navbar />
+    <Navbar>
+        <template #title>Coding Journey</template>
+    </Navbar>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <BoxTemplate />
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">

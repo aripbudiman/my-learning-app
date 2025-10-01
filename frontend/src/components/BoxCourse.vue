@@ -2,7 +2,8 @@
 import BookOpen from '../assets/icons/BookOpen.vue';
 import Clock from '../assets/icons/Clock.vue';
 import Play from '../assets/icons/Play.vue';
-import * as icons from '../assets/icons';
+import * as svg from '../assets/icons';
+import { Icon } from "@iconify/vue";
 </script>
 <template>
     <div
@@ -10,7 +11,7 @@ import * as icons from '../assets/icons';
         <div class="flex flex-col space-y-1.5 p-6 pb-3">
             <div
                 class="w-12 h-12 rounded-lg bg-gradient-to-r from-cyan-50 to-cyan-100 flex items-center justify-center text-2xl mb-3">
-                <img :src="icons['mysql']" alt="mysql" />
+                <img :src="svg['mysql']" alt="mysql" />
             </div>
             <div class="font-semibold tracking-tight text-xl">HTML &amp; CSS</div>
             <div class="text-sm text-slate-600">Learn the fundamentals of web development with HTML and
@@ -22,11 +23,11 @@ import * as icons from '../assets/icons';
                 <div class="flex items-center justify-between text-sm text-slate-600">
                     <div class="flex items-center space-x-4">
                         <span class="flex items-center">
-                            <BookOpen />
+                            <Icon icon="ion:book-outline" width="18" height="18" class="mr-1" />
                             lessons
                         </span>
                         <span class="flex items-center">
-                            <Clock />
+                            <Icon icon="mdi:clock-outline" width="18" height="18" class="mr-1" />
                             16 hours
                         </span>
                     </div>
@@ -49,7 +50,7 @@ import * as icons from '../assets/icons';
                 </div>
                 <button
                     class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 w-full group-hover:shadow-md transition-all duration-200">
-                    <Play />
+                    <Icon icon="iconoir:play" width="32" height="32" />
                     Continue Learning
                 </button>
             </div>
