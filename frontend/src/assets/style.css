@@ -1,0 +1,39 @@
+@import './emergent.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --ring: 240 5% 64.9%;
+    /* dst… */
+  }
+}
+
+
+@layer components {
+    .container {
+        @apply min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 flex items-center justify-center p-4 min-w-full;
+    }
+
+    .input-icon {
+        @apply flex w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors;
+        @apply file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground;
+        @apply placeholder:text-muted-foreground;
+        @apply focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring;
+        @apply disabled:cursor-not-allowed disabled:opacity-50;
+        @apply md:text-sm pl-10 pr-10 h-12;
+    }
+
+    .btn-link {
+        @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&>svg]:pointer-events-none [&>svg]:w-4 [&>svg]:h-4 [&>svg]:shrink-0 text-primary underline-offset-4 hover:underline p-0 h-auto text-sm;
+    }
+    .btn-eye{
+        @apply inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp>svg]:pointer-events-none [&amp>svg]:size-4 [&amp>svg]:shrink-0 hover:text-accent-foreground rounded-md text-xs absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent
+    }
+    .wrapper-sign{
+        @apply mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 space-y-6
+    }
+}

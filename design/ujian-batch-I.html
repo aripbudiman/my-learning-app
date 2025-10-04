@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ujian Praktik SQL - Vue.js</title>
+  <!-- Vue.js CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <!-- Tailwind CSS CDN (untuk styling) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN (untuk ikon) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Custom styles for Lucide icons */
+    .lucide {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+  <div id="app" class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6 border-2 border-indigo-200 rounded-lg shadow-md">
+      <div class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-6 rounded-t-lg">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <i data-lucide="database" class="h-8 w-8"></i>
+            <div>
+              <h1 class="text-2xl font-bold">Ujian Praktik SQL - Batch I</h1>
+              <p class="text-indigo-100">
+                Database Fundamentals & Basic SQL Queries
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
+            <i data-lucide="award" class="h-5 w-5"></i>
+            <span class="font-semibold">{{ completedQuestions.size }}/{{ questions.length }} Selesai</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Panel - Tables -->
+      <div class="lg:col-span-1 space-y-4">
+        <div class="border-2 border-gray-200 rounded-lg shadow-md">
+          <div class="bg-gray-50 p-4 rounded-t-lg">
+            <h2 class="text-lg font-semibold flex items-center gap-2">
+              <i data-lucide="book-open" class="h-5 w-5"></i>
+              Struktur Database
+            </h2>
+          </div>
+          <div class="p-4 space-y-4 max-h-[600px] overflow-y-auto">
+            <div v-for="(table, idx) in tables" :key="idx" class="border rounded-lg overflow-hidden">
+              <div class="bg-blue-600 text-white px-3 py-2 font-semibold text-sm">
+                Tabel: {{ table.name }}
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th v-for="(col, colIdx) in table.columns" :key="colIdx" class="px-2 py-1 text-left border-b font-medium">
+                        {{ col }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, rowIdx) in table.data" :key="rowIdx" class="hover:bg-gray-50">
+                      <td v-for="(cell, cellIdx) in row" :key="cellIdx" class="px-2 py-1 border-b">
+                        <span v-if="cell === null" class="text-gray-400 italic">NULL</span>
+                        <span v-else>{{ cell }}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel - Questions & Editor -->
+      <div class="lg:col-span-2 space-y-4">
+        <!-- Question Selector -->
+        <div class="border-2 border-gray-200 rounded-lg shadow-md">
+          <div class="bg-gray-50 p-4 rounded-t-lg">
+            <h2 class="text-lg font-semibold flex items-center gap-2">
+              <i data-lucide="users" class="h-5 w-5"></i>
+              Pilih Soal
+            </h2>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+              <button
+                v-for="(q, idx) in questions"
+                :key="idx"
+                @click="selectQuestion(idx)"
+                :class="[
+                  'relative px-4 py-2 rounded-md text-sm font-medium',
+                  selectedQuestion === idx ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
+                  completedQuestions.has(idx) ? 'ring-2 ring-green-500' : ''
+                ]"
+              >
+                {{ idx + 1 }}
+                <i v-if="completedQuestions.has(idx)" data-lucide="check" class="absolute -top-1 -right-1 h-4 w-4 text-green-600 bg-white rounded-full"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Question -->
+        <div class="border-2 border-indigo-200 rounded-lg shadow-md">
+          <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-t-lg">
+            <div class="flex items-start justify-between">
+              <div class="space-y-2">
+                <h2 class="text-xl font-bold flex items-center gap-3">
+                  <i data-lucide="code" class="h-5 w-5"></i>
+                  {{ currentQuestion.title }}
+                </h2>
+                <span :class="['inline-block px-3 py-1 rounded-full text-xs font-semibold', getDifficultyColor(currentQuestion.difficulty)]">
+                  {{ currentQuestion.difficulty }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+              <p class="font-medium text-gray-800">
+                {{ currentQuestion.description }}
+              </p>
+            </div>
+
+            <div class="space-y-2">
+              <label for="query" class="text-base font-semibold block">
+                Tulis Query SQL:
+              </label>
+              <textarea
+                id="query"
+                v-model="userQuery"
+                placeholder="SELECT * FROM ..."
+                class="w-full p-3 border-2 border-gray-300 rounded-md font-mono text-sm h-32 focus:outline-none focus:border-indigo-500"
+              ></textarea>
+            </div>
+
+            <!-- Feedback -->
+            <div v-if="feedback.type" :class="[
+              'p-4 rounded-lg flex items-center gap-2',
+              feedback.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+            ]">
+              <i :data-lucide="feedback.type === 'success' ? 'check' : 'x'" class="h-5 w-5"></i>
+              {{ feedback.message }}
+            </div>
+
+            <!-- Hint -->
+            <div v-if="showHint" class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+              <div class="flex items-start gap-2">
+                <i data-lucide="lightbulb" class="h-5 w-5 text-yellow-600 mt-0.5"></i>
+                <div>
+                  <p class="font-semibold text-yellow-800 mb-1">Petunjuk:</p>
+                  <p class="text-sm text-yellow-700">{{ currentQuestion.hint }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Solution -->
+            <div v-if="showSolution" class="bg-gray-100 border border-gray-300 p-4 rounded-lg">
+              <p class="font-semibold text-gray-800 mb-2">Solusi:</p>
+              <code class="block bg-white p-3 rounded border border-gray-200 font-mono text-sm text-blue-600">
+                {{ currentQuestion.expectedQuery }}
+              </code>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-2 pt-2">
+              <button
+                @click="handleSubmitAnswer"
+                class="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 flex items-center"
+              >
+                <i data-lucide="check" class="h-4 w-4 mr-2"></i>
+                Submit Jawaban
+              </button>
+              <button
+                @click="showHint = !showHint"
+                class="px-4 py-2 rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 flex items-center"
+              >
+                <i data-lucide="lightbulb" class="h-4 w-4 mr-2"></i>
+                {{ showHint ? 'Sembunyikan' : 'Tampilkan' }} Petunjuk
+              </button>
+              <button
+                @click="showSolution = !showSolution"
+                class="px-4 py-2 rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 flex items-center"
+              >
+                <i data-lucide="alert-circle" class="h-4 w-4 mr-2"></i>
+                {{ showSolution ? 'Sembunyikan' : 'Tampilkan' }} Solusi
+              </button>
+              <button
+                @click="resetQuestion"
+                class="px-4 py-2 rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 flex items-center"
+              >
+                <i data-lucide="x" class="h-4 w-4 mr-2"></i>
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Summary -->
+        <div class="border-2 border-green-200 rounded-lg shadow-md">
+          <div class="bg-green-50 p-4 rounded-t-lg">
+            <h2 class="text-lg font-semibold flex items-center gap-2">
+              <i data-lucide="award" class="h-5 w-5 text-green-600"></i>
+              Progress Ujian
+            </h2>
+          </div>
+          <div class="p-4">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Total Soal:</span>
+                <span class="font-bold">{{ questions.length }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Soal Selesai:</span>
+                <span class="font-bold text-green-600">{{ completedQuestions.size }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-medium">Persentase:</span>
+                <span class="font-bold text-indigo-600">
+                  {{ Math.round((completedQuestions.size / questions.length) * 100) }}%
+                </span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-3 mt-2">
+                <div
+                  class="bg-gradient-to-r from-green-500 to-indigo-500 h-3 rounded-full transition-all duration-300"
+                  :style="{ width: `${(completedQuestions.size / questions.length) * 100}%` }"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SQL Concepts Reference -->
+    <div class="mt-6 border-2 border-gray-200 rounded-lg shadow-md">
+      <div class="bg-gray-50 p-4 rounded-t-lg">
+        <h2 class="text-lg font-semibold flex items-center gap-2">
+          <i data-lucide="book-open" class="h-5 w-5"></i>
+          Referensi Konsep SQL
+        </h2>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="border rounded-lg p-4 bg-white">
+            <h3 class="font-semibold text-indigo-600 mb-2">SELECT</h3>
+            <p class="text-sm text-gray-600">Mengambil data dari tabel</p>
+            <code class="block mt-2 text-xs bg-gray-100 p-2 rounded">SELECT * FROM table</code>
+          </div>
+          <div class="border rounded-lg p-4 bg-white">
+            <h3 class="font-semibold text-indigo-600 mb-2">WHERE</h3>
+            <p class="text-sm text-gray-600">Filter data berdasarkan kondisi</p>
+            <code class="block mt-2 text-xs bg-gray-100 p-2 rounded">WHERE column = value</code>
+          </div>
+          <div class="border rounded-lg p-4 bg-white">
+            <h3 class="font-semibold text-indigo-600 mb-2">LIKE</h3>
+            <p class="text-sm text-gray-600">Pencarian dengan pattern</p>
+            <code class="block mt-2 text-xs bg-gray-100 p-2 rounded">WHERE column LIKE '%text%'</code>
+          </div>
+          <div class="border rounded-lg p-4 bg-white">
+            <h3 class="font-semibold text-indigo-600 mb-2">IS NULL</h3>
+            <p class="text-sm text-gray-600">Cari nilai NULL</p>
+            <code class="block mt-2 text-xs bg-gray-100 p-2 rounded">WHERE column IS NULL</code>
+          </div>
+          <div class="border rounded-lg p-4 bg-white">
+            <h3 class="font-semibold text-indigo-600 mb-2">AND</h3>
+            <p class="text-sm text-gray-600">Kedua kondisi harus terpenuhi</p>
+            <code class="block mt-2 text-xs bg-gray-100 p-2 rounded">WHERE cond1 AND cond2</code>
+          </div>
+          <div class="border rounded-lg p-4 bg-white">
+            <h3 class="font-semibold text-indigo-600 mb-2">OR</h3>
+            <p class="text-sm text-gray-600">Salah satu kondisi terpenuhi</p>
+            <code class="block mt-2 text-xs bg-gray-100 p-2 rounded">WHERE cond1 OR cond2</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const selectedQuestion = ref(0);
+        const userQuery = ref('');
+        const showHint = ref(false);
+        const showSolution = ref(false);
+        const feedback = ref({ type: null, message: '' });
+        const completedQuestions = ref(new Set());
+
+        // Sample Tables Data
+        const tables = ref([
+          {
+            name: 'karyawan',
+            columns: ['id_karyawan', 'nama', 'email', 'departemen_id', 'gaji', 'tanggal_masuk', 'status'],
+            data: [
+              [1, 'Budi Santoso', 'budi@company.com', 1, 8500000, '2020-01-15', 'Aktif'],
+              [2, 'Siti Rahma', 'siti@company.com', 2, 12000000, '2019-03-20', 'Aktif'],
+              [3, 'Ahmad Wijaya', null, 1, 9000000, '2021-06-10', 'Aktif'],
+              [4, 'Maya Putri', 'maya@company.com', 3, 7500000, '2022-02-01', 'Cuti'],
+              [5, 'Rudi Hermawan', 'rudi@company.com', null, 6500000, '2023-01-05', 'Aktif'],
+              [6, 'Lisa Dewi', 'lisa@company.com', 2, 11000000, '2018-09-12', 'Resign'],
+              [7, 'Eko Prasetyo', null, 1, 8000000, '2021-11-20', 'Aktif'],
+              [8, 'Nina Sari', 'nina@company.com', 3, null, '2023-05-15', 'Aktif'],
+              [9, 'Doni Setiawan', 'doni@company.com', 2, 10500000, '2020-07-08', 'Aktif'],
+              [10, 'Rina Marlina', null, null, 7000000, '2022-10-01', 'Aktif']
+            ]
+          },
+          {
+            name: 'departemen',
+            columns: ['id_departemen', 'nama_departemen', 'lokasi', 'manager'],
+            data: [
+              [1, 'IT', 'Jakarta', 'Budi Santoso'],
+              [2, 'Finance', 'Jakarta', 'Siti Rahma'],
+              [3, 'HR', 'Bandung', 'Maya Putri'],
+              [4, 'Marketing', 'Surabaya', null]
+            ]
+          },
+          {
+            name: 'proyek',
+            columns: ['id_proyek', 'nama_proyek', 'karyawan_id', 'status_proyek', 'deadline'],
+            data: [
+              [101, 'Website Redesign', 1, 'Selesai', '2023-12-01'],
+              [102, 'Mobile App', 3, 'Berjalan', '2024-03-15'],
+              [103, 'System Integration', 1, 'Berjalan', null],
+              [104, 'Data Migration', 7, 'Tertunda', '2024-02-28'],
+              [105, 'Cloud Migration', null, 'Planning', '2024-06-30'],
+              [106, 'Security Audit', 2, 'Selesai', '2023-11-15'],
+              [107, 'Budget Analysis', 9, 'Berjalan', '2024-01-31'],
+              [108, 'Recruitment System', 4, null, '2024-04-01']
+            ]
+          }
+        ]);
+
+        // Questions/Cases for the exam
+        const questions = ref([
+          {
+            id: 1,
+            title: "Soal 1: SELECT Dasar",
+            description: "Tampilkan SEMUA data dari tabel karyawan",
+            difficulty: "Easy",
+            hint: "Gunakan SELECT * untuk menampilkan semua kolom",
+            expectedQuery: "SELECT * FROM karyawan",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized === "select * from karyawan" ||
+                     normalized === "select * from karyawan;";
+            }
+          },
+          {
+            id: 2,
+            title: "Soal 2: SELECT Kolom Tertentu",
+            description: "Tampilkan hanya kolom nama dan email dari tabel karyawan",
+            difficulty: "Easy",
+            hint: "Sebutkan nama kolom yang ingin ditampilkan setelah SELECT",
+            expectedQuery: "SELECT nama, email FROM karyawan",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("select") &&
+                     normalized.includes("nama") &&
+                     normalized.includes("email") &&
+                     normalized.includes("from karyawan");
+            }
+          },
+          {
+            id: 3,
+            title: "Soal 3: WHERE Sederhana",
+            description: "Tampilkan semua karyawan yang bekerja di departemen_id = 1",
+            difficulty: "Easy",
+            hint: "Gunakan WHERE untuk filter berdasarkan kondisi",
+            expectedQuery: "SELECT * FROM karyawan WHERE departemen_id = 1",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where departemen_id = 1");
+            }
+          },
+          {
+            id: 4,
+            title: "Soal 4: WHERE dengan Kondisi String",
+            description: "Tampilkan semua karyawan dengan status 'Aktif'",
+            difficulty: "Easy",
+            hint: "String harus diapit dengan tanda kutip tunggal",
+            expectedQuery: "SELECT * FROM karyawan WHERE status = 'Aktif'",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where status = 'aktif'");
+            }
+          },
+          {
+            id: 5,
+            title: "Soal 5: LIKE Pattern Matching",
+            description: "Tampilkan karyawan yang namanya mengandung kata 'Dewi'",
+            difficulty: "Medium",
+            hint: "Gunakan LIKE dengan % sebagai wildcard",
+            expectedQuery: "SELECT * FROM karyawan WHERE nama LIKE '%Dewi%'",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where nama like '%dewi%'");
+            }
+          },
+          {
+            id: 6,
+            title: "Soal 6: LIKE dengan Pattern Awal",
+            description: "Tampilkan karyawan yang namanya dimulai dengan huruf 'R'",
+            difficulty: "Medium",
+            hint: "Gunakan LIKE 'R%' untuk mencari yang dimulai dengan R",
+            expectedQuery: "SELECT * FROM karyawan WHERE nama LIKE 'R%'",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where nama like 'r%'");
+            }
+          },
+          {
+            id: 7,
+            title: "Soal 7: IS NULL",
+            description: "Tampilkan karyawan yang tidak memiliki email (email IS NULL)",
+            difficulty: "Medium",
+            hint: "Gunakan IS NULL untuk mencari nilai NULL",
+            expectedQuery: "SELECT * FROM karyawan WHERE email IS NULL",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where email is null");
+            }
+          },
+          {
+            id: 8,
+            title: "Soal 8: IS NOT NULL",
+            description: "Tampilkan karyawan yang memiliki departemen (departemen_id IS NOT NULL)",
+            difficulty: "Medium",
+            hint: "Gunakan IS NOT NULL untuk mencari nilai yang tidak NULL",
+            expectedQuery: "SELECT * FROM karyawan WHERE departemen_id IS NOT NULL",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where departemen_id is not null");
+            }
+          },
+          {
+            id: 9,
+            title: "Soal 9: NOT Operator",
+            description: "Tampilkan karyawan yang status-nya BUKAN 'Aktif'",
+            difficulty: "Medium",
+            hint: "Gunakan NOT atau != untuk negasi",
+            expectedQuery: "SELECT * FROM karyawan WHERE status != 'Aktif'",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     (normalized.includes("where status != 'aktif'") ||
+                      normalized.includes("where status <> 'aktif'") ||
+                      normalized.includes("where not status = 'aktif'"));
+            }
+          },
+          {
+            id: 10,
+            title: "Soal 10: AND Operator",
+            description: "Tampilkan karyawan yang status-nya 'Aktif' DAN gaji lebih dari 9000000",
+            difficulty: "Medium",
+            hint: "Gunakan AND untuk menggabungkan dua kondisi",
+            expectedQuery: "SELECT * FROM karyawan WHERE status = 'Aktif' AND gaji > 9000000",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where") &&
+                     normalized.includes("status = 'aktif'") &&
+                     normalized.includes("and") &&
+                     normalized.includes("gaji > 9000000");
+            }
+          },
+          {
+            id: 11,
+            title: "Soal 11: OR Operator",
+            description: "Tampilkan karyawan yang bekerja di departemen_id 1 ATAU departemen_id 2",
+            difficulty: "Medium",
+            hint: "Gunakan OR untuk kondisi alternatif",
+            expectedQuery: "SELECT * FROM karyawan WHERE departemen_id = 1 OR departemen_id = 2",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where") &&
+                     ((normalized.includes("departemen_id = 1") &&
+                       normalized.includes("or") &&
+                       normalized.includes("departemen_id = 2")) ||
+                      normalized.includes("departemen_id in (1, 2)"));
+            }
+          },
+          {
+            id: 12,
+            title: "Soal 12: Kombinasi AND dan OR",
+            description: "Tampilkan karyawan yang (status = 'Aktif' DAN gaji > 8000000) ATAU departemen_id = 3",
+            difficulty: "Hard",
+            hint: "Gunakan tanda kurung untuk mengelompokkan kondisi",
+            expectedQuery: "SELECT * FROM karyawan WHERE (status = 'Aktif' AND gaji > 8000000) OR departemen_id = 3",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where") &&
+                     normalized.includes("status = 'aktif'") &&
+                     normalized.includes("and") &&
+                     normalized.includes("gaji > 8000000") &&
+                     normalized.includes("or") &&
+                     normalized.includes("departemen_id = 3");
+            }
+          },
+          {
+            id: 13,
+            title: "Soal 13: LIKE dan AND",
+            description: "Tampilkan karyawan yang email-nya mengandung 'company.com' DAN status 'Aktif'",
+            difficulty: "Hard",
+            hint: "Kombinasikan LIKE dengan AND",
+            expectedQuery: "SELECT * FROM karyawan WHERE email LIKE '%company.com%' AND status = 'Aktif'",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where") &&
+                     normalized.includes("email like '%company.com%'") &&
+                     normalized.includes("and") &&
+                     normalized.includes("status = 'aktif'");
+            }
+          },
+          {
+            id: 14,
+            title: "Soal 14: IS NULL dan OR",
+            description: "Tampilkan karyawan yang tidak punya email ATAU tidak punya departemen",
+            difficulty: "Hard",
+            hint: "Kombinasikan IS NULL dengan OR",
+            expectedQuery: "SELECT * FROM karyawan WHERE email IS NULL OR departemen_id IS NULL",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where") &&
+                     normalized.includes("email is null") &&
+                     normalized.includes("or") &&
+                     normalized.includes("departemen_id is null");
+            }
+          },
+          {
+            id: 15,
+            title: "Soal 15: Kompleks - Multiple Conditions",
+            description: "Tampilkan karyawan yang: nama mengandung 'i', status BUKAN 'Resign', memiliki email (NOT NULL), dan (gaji > 7000000 ATAU departemen_id = 2)",
+            difficulty: "Hard",
+            hint: "Gunakan kombinasi LIKE, NOT, IS NOT NULL, AND, OR dengan tanda kurung",
+            expectedQuery: "SELECT * FROM karyawan WHERE nama LIKE '%i%' AND status != 'Resign' AND email IS NOT NULL AND (gaji > 7000000 OR departemen_id = 2)",
+            validateAnswer: (query) => {
+              const normalized = query.toLowerCase().replace(/\s+/g, ' ').trim();
+              return normalized.includes("from karyawan") &&
+                     normalized.includes("where") &&
+                     normalized.includes("nama like '%i%'") &&
+                     normalized.includes("status != 'resign'") &&
+                     normalized.includes("email is not null") &&
+                     normalized.includes("gaji > 7000000") &&
+                     normalized.includes("or") &&
+                     normalized.includes("departemen_id = 2");
+            }
+          }
+        ]);
+
+        const currentQuestion = computed(() => questions.value[selectedQuestion.value]);
+
+        const handleSubmitAnswer = () => {
+          const isCorrect = currentQuestion.value.validateAnswer(userQuery.value);
+
+          if (isCorrect) {
+            feedback.value = { type: 'success', message: 'Benar! Query Anda sudah tepat.' };
+            completedQuestions.value.add(selectedQuestion.value);
+          } else {
+            feedback.value = { type: 'error', message: 'Belum tepat. Coba periksa kembali syntax dan logika query Anda.' };
+          }
+        };
+
+        const resetQuestion = () => {
+          userQuery.value = '';
+          showHint.value = false;
+          showSolution.value = false;
+          feedback.value = { type: null, message: '' };
+        };
+
+        const selectQuestion = (index) => {
+          selectedQuestion.value = index;
+          resetQuestion();
+        };
+
+        const getDifficultyColor = (difficulty) => {
+          switch(difficulty) {
+            case 'Easy': return 'text-green-600 bg-green-50';
+            case 'Medium': return 'text-yellow-600 bg-yellow-50';
+            case 'Hard': return 'text-red-600 bg-red-50';
+            default: return 'text-gray-600 bg-gray-50';
+          }
+        };
+
+        // Initialize Lucide icons after component is mounted
+        onMounted(() => {
+          lucide.createIcons();
+        });
+
+        return {
+          selectedQuestion,
+          userQuery,
+          showHint,
+          showSolution,
+          feedback,
+          completedQuestions,
+          tables,
+          questions,
+          currentQuestion,
+          handleSubmitAnswer,
+          resetQuestion,
+          selectQuestion,
+          getDifficultyColor,
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

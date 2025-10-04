@@ -1,22 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '../components/pages/HomePage.vue'
-import Courses from '../components/pages/Courses.vue'
-import ExercisesPage from '../components/pages/ExercisesPage.vue'
+import SignPage from '../pages/SignPage.vue'
+import DashboardPage from '../pages/DashboardPage.vue'
+import AdminPanel from '../pages/AdminPanel.vue'
+
 const routes = [
   {
+    path: '/sign',
+    name: 'SignPage',
+    component: SignPage
+  },
+  {
     path: '/',
-    name: 'Home',
-    component: HomePage
+    name: 'DashboardPage',
+    component: DashboardPage
   },
   {
-    path: '/courses',
-    name: 'Courses',
-    component: Courses
-  },
-  {
-    path: '/exercises',
-    name: 'Exercises',
-    component: ExercisesPage
+    path: '/admin-panel',
+    name: 'AdminPanel',
+    component: AdminPanel
   }
 ]
 

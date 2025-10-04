@@ -1,9 +1,8 @@
 <script setup>
-import Navbar from './components/Navbar.vue';
+
 </script>
 <template>
-    <div class="bg-gray-50">
-        <Navbar></Navbar>
+    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
         <router-view />
     </div>
 </template>
