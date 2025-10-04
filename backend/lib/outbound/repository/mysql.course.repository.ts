@@ -4,13 +4,13 @@ import { CoursePort } from '@lib/outbound/course.port'
 
 export class MySqlCourseRepository implements CoursePort {
     async create(data: CourseCreate): Promise<Course> {
-        const course: Course = await database.courses.create({ data: { ...data } })
-        return course
+        const course = await database.courses.create({ data: { ...data } })
+        return course as Course
     }
 
     async update(id: number, data: CourseCreate): Promise<Course> {
-        const course: Course = await database.courses.update({ where: { id }, data: { ...data } })
-        return course
+        const course = await database.courses.update({ where: { id }, data: { ...data } })
+        return course as Course
     }
 
     async delete(id: number): Promise<void> {
@@ -18,14 +18,43 @@ export class MySqlCourseRepository implements CoursePort {
     }
 
     async find(id: number): Promise<Course | null> {
-        const course: Course | null = await database.courses.findUnique({ where: { id } })
+        const course = await database.courses.findUnique({
+            where: { id },
+            include: {
+                modules: {
+                    select: {
+                        _count: {
+                            select: {
+                                lessons: true,
+                            },
+                        },
+                    },
+                },
+            },
+        })
         return course
     }
 
     async findAll(limit = 10, page = 1): Promise<Course[]> {
-        const courses: Course[] = await database.courses.findMany({
+        const courses = await database.courses.findMany({
             skip: (page - 1) * limit,
             take: limit,
+            select: {
+                id: true,
+                nameCourse: true,
+                description: true,
+                colorTheme: true,
+                icon: true,
+                modules: {
+                    select: {
+                        _count: {
+                            select: {
+                                lessons: true,
+                            },
+                        },
+                    },
+                },
+            },
         })
         return courses
     }

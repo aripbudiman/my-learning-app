@@ -6,11 +6,23 @@ export interface Course {
     description: string
     icon: string
     colorTheme: string
+    modules: { _count: { lessons: number } }[]
     createdAt?: Date
     updatedAt?: Date
 }
 
-export type CourseCreate = Omit<Course, 'id' | 'createdAt' | 'updatedAt'>
+export type CourseCreate = Omit<Course, 'id' | 'createdAt' | 'updatedAt' | 'modules'>
+
+export interface CourseResponse {
+    id: number
+    nameCourse: string
+    description: string
+    icon: string
+    colorTheme: string
+    totalLessons: number
+    createdAt?: Date
+    updatedAt?: Date
+}
 
 export interface Query {
     limit: number
@@ -33,6 +45,7 @@ export const courseResponseSchema = t.Object({
     description: t.String(),
     icon: t.Optional(t.String()),
     colorTheme: t.Optional(t.String()),
+    totalLessons: t.Integer(),
     createdAt: t.Optional(t.Date()),
     updatedAt: t.Optional(t.Date()),
 })
