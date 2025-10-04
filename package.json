@@ -40,6 +40,7 @@
     },
     "dependencies": {
         "@prisma/client": "^6.16.1",
+        "@types/decimal.js": "^7.4.3",
         "husky": "^9.1.7",
         "vue-router": "^4.5.1"
     }

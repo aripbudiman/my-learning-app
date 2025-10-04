@@ -1,39 +1,64 @@
 import { t } from 'elysia'
+import { DifficultyLevel } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
 
 export interface Modules {
-  id?: number
-  courseId: number | null
-  title: string
-  orderIndex: number
-  estimatedTime: number
-  createdAt?: Date
-  updatedAt?: Date
+    id?: number
+    orderIndex: number
+    courseId: number | null
+    batchTitle: string
+    description: string
+    difficultyLevel: DifficultyLevel
+    originalPrice: string
+    salePrice: string
+    topics: string
+    createdAt?: Date
+    updatedAt?: Date
+}
+
+export interface ModuleRepository {
+    id?: number
+    orderIndex: number
+    courseId: number | null
+    batchTitle: string
+    description: string
+    difficultyLevel: DifficultyLevel
+    originalPrice: Decimal
+    salePrice: Decimal
+    topics: string
+    createdAt?: Date
+    updatedAt?: Date
 }
 
 export interface QuerySchema {
-  limit: number
-  page: number
+    limit: number
+    page: number
 }
 
 export type ModuleCreate = Omit<Modules, 'id' | 'createdAt' | 'updatedAt'>
+export type ModuleRepositoryCreate = Omit<ModuleRepository, 'id' | 'createdAt' | 'updatedAt'>
 
 export const moduleSchema = t.Object({
-  id: t.Optional(t.Integer()),
-  courseId: t.Integer(),
-  title: t.String(),
-  orderIndex: t.Integer(),
-  estimatedTime: t.Integer(),
-  createdAt: t.Optional(t.Date()),
-  updatedAt: t.Optional(t.Date()),
+    id: t.Optional(t.Integer()),
+    orderIndex: t.Integer(),
+    courseId: t.Integer(),
+    batchTitle: t.String(),
+    description: t.String(),
+    difficultyLevel: t.Enum(DifficultyLevel),
+    originalPrice: t.String(),
+    salePrice: t.String(),
+    topics: t.String(),
+    createdAt: t.Optional(t.Date()),
+    updatedAt: t.Optional(t.Date()),
 })
 
 export const moduleResponseSchema = moduleSchema
 
 export const paramsSchema = t.Object({
-  id: t.Number(),
+    id: t.Number(),
 })
 
 export const querySchema = t.Object({
-  limit: t.Number(),
-  page: t.Number(),
+    limit: t.Number(),
+    page: t.Number(),
 })

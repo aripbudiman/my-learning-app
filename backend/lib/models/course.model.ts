@@ -1,12 +1,9 @@
 import { t } from 'elysia'
-import { CourseLevel } from '@prisma/client'
-export { CourseLevel }
 
 export interface Course {
     id: number
-    name: string
+    nameCourse: string
     description: string
-    level: CourseLevel
     icon: string
     colorTheme: string
     createdAt?: Date
@@ -22,9 +19,8 @@ export interface Query {
 
 export const courseSchema = t.Object({
     id: t.Optional(t.Integer()),
-    name: t.String(),
+    nameCourse: t.String(),
     description: t.String(),
-    level: t.Enum(CourseLevel),
     icon: t.Optional(t.String()),
     colorTheme: t.Optional(t.String()),
     createdAt: t.Optional(t.Date()),
@@ -33,9 +29,8 @@ export const courseSchema = t.Object({
 
 export const courseResponseSchema = t.Object({
     id: t.Integer(),
-    name: t.String(),
+    nameCourse: t.String(),
     description: t.String(),
-    level: t.Enum(CourseLevel),
     icon: t.Optional(t.String()),
     colorTheme: t.Optional(t.String()),
     createdAt: t.Optional(t.Date()),

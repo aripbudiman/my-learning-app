@@ -15,47 +15,63 @@ datasource db {
 }
 
 model courses {
-  id          Int         @id @default(autoincrement())
-  name        String
-  description String      @db.Text
-  level       CourseLevel
+  id          Int       @id @default(autoincrement())
+  nameCourse  String    @map("name_course")
+  description String    @db.Text
   icon        String
-  colorTheme  String      @map("color_theme")
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @updatedAt @map("updated_at")
+  colorTheme  String    @map("color_theme")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
   modules     modules[]
 }
 
-enum CourseLevel {
+enum DifficultyLevel {
   BEGINNER
   INTERMEDIATE
   ADVANCED
 }
 
 model modules {
-  id            Int         @id @default(autoincrement())
-  courseId      Int?        @map("course_id")
-  courses       courses?    @relation(fields: [courseId], references: [id])
-  title         String
-  orderIndex    Int         @map("order_index")
-  estimatedTime Int         @map("estimated_time")
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
-  lessons       lessons[]
-  exercises     exercises[]
+  id              Int             @id @default(autoincrement())
+  courseId        Int?            @map("course_id")
+  courses         courses?        @relation(fields: [courseId], references: [id])
+  batchTitle      String          @map("batch_title")
+  description     String          @db.Text
+  topics          String
+  difficultyLevel DifficultyLevel @map("difficulty_level")
+  orderIndex      Int             @map("order_index")
+  originalPrice   Decimal         @map("original_price") @db.Decimal(15, 2)
+  salePrice       Decimal         @map("sale_price") @db.Decimal(15, 2)
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  lessons         lessons[]
+  exercises       exercises[]
+}
+
+enum LessonType {
+  PYTHON
+  TYPESCRIPT
+  PHP
+  SQLITE3
+  JAVASCRIPT
+  JAVA
 }
 
 model lessons {
-  id            Int             @id @default(autoincrement())
-  moduleId      Int             @map("module_id")
-  modules       modules?        @relation(fields: [moduleId], references: [id])
-  title         String
-  content       String          @db.LongText
-  exerciseCode  String          @map("exercise_code") @db.LongText
-  orderIndex    Int             @map("order_index")
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
-  user_progress user_progress[]
+  id             Int             @id @default(autoincrement())
+  moduleId       Int             @map("module_id")
+  modules        modules?        @relation(fields: [moduleId], references: [id])
+  lessonTitle    String          @map("lesson_title")
+  description    String          @db.Text
+  lessonType     LessonType      @map("lesson_type")
+  pointsReward   Int             @map("points_reward")
+  starterCode    String          @map("starter_code") @db.LongText
+  instructions   String          @db.LongText
+  expectedOutput String          @map("expected_output") @db.LongText
+  orderIndex     Int             @map("order_index")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  user_progress  user_progress[]
 }
 
 model exercises {
@@ -84,7 +100,7 @@ enum ExercisesLevel {
 }
 
 model users {
-  id            Int             @id
+  id            String          @id @db.Char(64)
   name          String
   email         String
   passwordHash  String          @map("password_hash")
@@ -101,7 +117,7 @@ enum Roles {
 
 model user_progress {
   id          Int      @id
-  userId      Int?     @map("user_id")
+  userId      String?  @map("user_id")
   user        users?   @relation(fields: [userId], references: [id])
   lessonsId   Int      @map("lessons_id")
   lessons     lessons  @relation(fields: [lessonsId], references: [id])
@@ -119,7 +135,7 @@ model submissions {
   id            Int       @id
   exerciseId    Int       @map("exercise_id")
   exercise      exercises @relation(fields: [exerciseId], references: [id])
-  userId        Int?      @map("user_id")
+  userId        String?   @map("user_id")
   user          users?    @relation(fields: [userId], references: [id])
   submittedCode String    @map("submitted_code") @db.Text
   isCorrect     Boolean   @map("is_correct")

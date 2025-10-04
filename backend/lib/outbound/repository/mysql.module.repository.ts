@@ -1,15 +1,15 @@
 import { ModulePort } from '../module.port'
 import database from '@lib/configs/database'
-import { ModuleCreate, Modules } from '@lib/models/module.model'
+import { ModuleRepositoryCreate, ModuleRepository } from '@lib/models/module.model'
 
 export class MysqlModuleRepository implements ModulePort {
-    async create(data: ModuleCreate): Promise<Modules> {
-        const module: Modules = await database.modules.create({ data })
+    async create(data: ModuleRepositoryCreate): Promise<ModuleRepository> {
+        const module = await database.modules.create({ data })
         return module
     }
 
-    async update(id: number, data: ModuleCreate): Promise<Modules> {
-        const module: Modules = await database.modules.update({ where: { id }, data })
+    async update(id: number, data: ModuleRepositoryCreate): Promise<ModuleRepository> {
+        const module = await database.modules.update({ where: { id }, data })
         return module
     }
 
@@ -17,13 +17,13 @@ export class MysqlModuleRepository implements ModulePort {
         await database.modules.delete({ where: { id } })
     }
 
-    async find(id: number): Promise<Modules | null> {
-        const module: Modules | null = await database.modules.findUnique({ where: { id } })
+    async find(id: number): Promise<ModuleRepository | null> {
+        const module = await database.modules.findUnique({ where: { id } })
         return module
     }
 
-    async findAll(limit: number, page: number): Promise<Modules[]> {
-        const modules: Modules[] = await database.modules.findMany({
+    async findAll(limit: number, page: number): Promise<ModuleRepository[]> {
+        const modules = await database.modules.findMany({
             skip: (page - 1) * limit,
             take: limit,
         })

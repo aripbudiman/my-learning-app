@@ -1,9 +1,9 @@
-import { Modules, ModuleCreate } from '@models/module.model'
+import { ModuleRepository, ModuleRepositoryCreate } from '@models/module.model'
 export interface ModulePort {
-    create(data: ModuleCreate): Promise<Modules>
-    update(id: number, data: ModuleCreate): Promise<Modules>
+    create(data: ModuleRepositoryCreate): Promise<ModuleRepository>
+    update(id: number, data: ModuleRepositoryCreate): Promise<ModuleRepository>
     delete(id: number): Promise<void>
-    find(id: number): Promise<Modules | null>
-    findAll(limit: number, page: number): Promise<Modules[]>
+    find(id: number): Promise<ModuleRepository | null>
+    findAll(limit: number, page: number): Promise<ModuleRepository[]>
     count(): Promise<number>
 }

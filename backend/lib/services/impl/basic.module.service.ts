@@ -1,16 +1,37 @@
 import { ModuleSvc } from '@lib/services/contract/module.service'
 import { ModulePort } from '@lib/outbound/module.port'
-import { ModuleCreate, Modules, QuerySchema } from '@models/module.model'
+import { ModuleCreate, Modules, QuerySchema, ModuleRepositoryCreate } from '@models/module.model'
+import { Decimal } from '@prisma/client/runtime/library'
 
 export class BasicModuleService implements ModuleSvc {
     constructor(private repository: ModulePort) {}
 
     async createModule(data: ModuleCreate): Promise<Modules> {
-        return await this.repository.create(data)
+        const moduleData: ModuleRepositoryCreate = {
+            ...data,
+            originalPrice: new Decimal(data.originalPrice),
+            salePrice: new Decimal(data.salePrice),
+        }
+        const result = await this.repository.create(moduleData)
+        return {
+            ...result,
+            originalPrice: result.originalPrice.toString(),
+            salePrice: result.salePrice.toString(),
+        }
     }
 
     async updateModule(id: number, data: ModuleCreate): Promise<Modules> {
-        return await this.repository.update(id, data)
+        const moduleData: ModuleRepositoryCreate = {
+            ...data,
+            originalPrice: new Decimal(data.originalPrice),
+            salePrice: new Decimal(data.salePrice),
+        }
+        const result = await this.repository.update(id, moduleData)
+        return {
+            ...result,
+            originalPrice: result.originalPrice.toString(),
+            salePrice: result.salePrice.toString(),
+        }
     }
 
     async deleteModule(id: number): Promise<string> {
@@ -19,10 +40,21 @@ export class BasicModuleService implements ModuleSvc {
     }
 
     async getModule(id: number): Promise<Modules | null> {
-        return await this.repository.find(id)
+        const data = await this.repository.find(id)
+        if (!data) return null
+        return {
+            ...data,
+            originalPrice: data.originalPrice.toString(),
+            salePrice: data.salePrice.toString(),
+        }
     }
 
     async getAllModules(query: QuerySchema): Promise<Modules[]> {
-        return await this.repository.findAll(query.limit, query.page)
+        const data = await this.repository.findAll(query.limit, query.page)
+        return data.map((module) => ({
+            ...module,
+            originalPrice: module.originalPrice.toString(),
+            salePrice: module.salePrice.toString(),
+        }))
     }
 }
