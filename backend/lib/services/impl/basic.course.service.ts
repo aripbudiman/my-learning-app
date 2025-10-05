@@ -61,7 +61,10 @@ export class BasicCourseService implements CourseSvc {
             description: course.description,
             colorTheme: course.colorTheme,
             icon: course.icon,
-            totalLessons: course.modules.reduce((sum: number, module: Modules) => sum + module._count!.lessons, 0),
+            totalLessons: course.modules.reduce(
+                (sum: number, module: Modules) => sum + (module._count?.lessons ?? 0),
+                0
+            ),
         }))
         return result
     }

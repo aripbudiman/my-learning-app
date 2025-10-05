@@ -5,6 +5,9 @@ import Navbar from '../components/Navbar.vue'
 import BoxAdmin from '../templates/BoxAdmin.vue'
 import CourseCard from '../components/CourseCard.vue'
 import FormCourse from '../templates/FormCourse.vue'
+import QuickActions from '../components/QuickActions.vue'
+import ActivityItem from '../components/ActivityItem.vue'
+import CourseWithBatches from '../components/CourseWithBatches.vue'
 import axios from 'axios'
 import { createToast } from 'mosha-vue-toastify'
 import 'mosha-vue-toastify/dist/style.css'
@@ -129,6 +132,51 @@ const handleFormCourseClose = () => {
     formCourseRef.value?.resetForm()
 }
 
+const handleQuickAction = (action) => {
+    if (action === 'add-course') {
+        handleShowFormCourse()
+    }
+    // Add other actions as needed
+}
+
+const recentActivities = ref([
+    { id: 1, title: 'HTML & CSS course updated', time: '2 hours ago', type: 'course' },
+    { id: 2, title: 'New lesson added to JavaScript Batch I', time: '5 hours ago', type: 'lesson' },
+    { id: 3, title: 'Python Batch III published', time: '1 day ago', type: 'batch' },
+])
+
+// Mock data for batches - replace with actual API call
+const coursesWithBatches = ref([
+    {
+        id: 1,
+        nameCourse: 'HTML & CSS',
+        icon: '🌐',
+        colorTheme: 'linear-gradient(to right, #fb923c, #ef4444)',
+        batches: [
+            {
+                id: 1,
+                batchTitle: 'Batch I - HTML Fundamentals',
+                description: 'Master the basics of HTML structure and semantic elements',
+                totalLessons: 12,
+                duration: '4 hours',
+                difficultyLevel: 'Beginner',
+                salePrice: 299000,
+                topics: ['HTML Structure', 'Semantic Elements', 'Forms', 'Tables'],
+            },
+            {
+                id: 2,
+                batchTitle: 'Batch II - CSS Basics',
+                description: 'Learn styling with CSS',
+                totalLessons: 15,
+                duration: '5 hours',
+                difficultyLevel: 'Beginner',
+                salePrice: 349000,
+                topics: ['Selectors', 'Box Model', 'Flexbox', 'Grid'],
+            },
+        ],
+    },
+])
+
 onMounted(() => {
     getCourses()
 })
@@ -193,28 +241,7 @@ onMounted(() => {
         </div>
         <div id="tab-overview" v-if="tab === 'overview'">
             <BoxAdmin />
-            <div class="rounded-xl border bg-card text-card-foreground shadow">
-                <div class="flex flex-col space-y-1.5 p-6">
-                    <div class="font-semibold leading-none tracking-tight">Quick Actions</div>
-                    <div class="text-sm text-muted-foreground">Common tasks to manage your content</div>
-                </div>
-                <div class="p-6 pt-0">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <button class="action-button">
-                            <Icon icon="mdi:plus" width="24" height="24" />
-                            <span>Add New Course</span>
-                        </button>
-                        <button class="action-button">
-                            <Icon icon="mdi:plus" width="24" height="24" />
-                            <span>Create Batch</span>
-                        </button>
-                        <button class="action-button">
-                            <Icon icon="mdi:plus" width="24" height="24" />
-                            <span>Add Lesson</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <QuickActions @action-click="handleQuickAction" />
             <div class="rounded-xl border bg-card text-card-foreground shadow mt-10" id="recent-activity">
                 <div class="flex flex-col space-y-1.5 p-6">
                     <div class="font-semibold leading-none tracking-tight">Recent Activity</div>
@@ -222,54 +249,7 @@ onMounted(() => {
                 </div>
                 <div class="p-6 pt-0">
                     <div class="space-y-4">
-                        <div class="flex items-center space-x-4 p-3 bg-slate-50 rounded-lg">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                <Icon
-                                    icon="lucide:book-open"
-                                    width="24"
-                                    height="24"
-                                    class="w-4 h-4 text-green-600"
-                                    aria-hidden="true"
-                                />
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-slate-900">HTML &amp; CSS course updated</p>
-                                <p class="text-sm text-slate-600">2 hours ago</p>
-                            </div>
-                            <div class="badge">Course</div>
-                        </div>
-                        <div class="flex items-center space-x-4 p-3 bg-slate-50 rounded-lg">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                <Icon
-                                    icon="lucide:circle-play"
-                                    width="24"
-                                    height="24"
-                                    class="w-4 h-4 text-blue-600"
-                                    aria-hidden="true"
-                                />
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-slate-900">New lesson added to JavaScript Batch I</p>
-                                <p class="text-sm text-slate-600">5 hours ago</p>
-                            </div>
-                            <div class="badge">Lesson</div>
-                        </div>
-                        <div class="flex items-center space-x-4 p-3 bg-slate-50 rounded-lg">
-                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                <Icon
-                                    icon="lucide:layers"
-                                    width="24"
-                                    height="24"
-                                    class="w-4 h-4 text-purple-600"
-                                    aria-hidden="true"
-                                />
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-slate-900">Python Batch III published</p>
-                                <p class="text-sm text-slate-600">1 day ago</p>
-                            </div>
-                            <div class="badge">Batch</div>
-                        </div>
+                        <ActivityItem v-for="activity in recentActivities" :key="activity.id" :activity="activity" />
                     </div>
                 </div>
             </div>
@@ -309,7 +289,29 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <div id="tab-batches" v-if="tab === 'batches'"></div>
+        <div id="tab-batches" v-if="tab === 'batches'">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Batch Management</h2>
+                    <p class="text-slate-600">Create and manage course batches/modules</p>
+                </div>
+                <button
+                    class="justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 flex items-center space-x-2"
+                >
+                    <Icon icon="lucide:plus" width="24" height="24" class="w-4 h-4" />
+                    <span>Add New Batch</span>
+                </button>
+            </div>
+            <div class="space-y-8 mt-8">
+                <CourseWithBatches
+                    v-for="course in coursesWithBatches"
+                    :key="course.id"
+                    :course="course"
+                    @edit-batch="(batch) => console.log('Edit batch:', batch)"
+                    @delete-batch="(batch) => console.log('Delete batch:', batch)"
+                />
+            </div>
+        </div>
         <div id="tab-lessons" v-if="tab === 'lessons'"></div>
     </div>
 </template>
@@ -317,14 +319,6 @@ onMounted(() => {
 <style scoped>
 .tab-button {
     @apply justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow flex items-center space-x-2;
-}
-
-.action-button {
-    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 border border-gray-200 shadow-sm hover:bg-gray-50 hover:text-gray-900 px-4 py-2 h-20 flex-col space-y-2;
-}
-
-.badge {
-    @apply inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 border-transparent bg-gray-100 text-gray-700 hover:bg-gray-200;
 }
 
 #load-more-button {
