@@ -1,16 +1,36 @@
 import { ValidationError } from 'elysia'
 import { CourseSvc } from '@lib/services/contract/course.service'
-import { Course, Query, CourseResponse } from '@lib/models/course.model'
+import { Course, Query, CourseResponse, CourseCreate } from '@lib/models/course.model'
 import { CoursePort } from '@lib/outbound/course.port'
 
 export class BasicCourseService implements CourseSvc {
     constructor(private repository: CoursePort) {}
-    async createCourse(data: Course): Promise<Course | ValidationError> {
-        return await this.repository.create(data)
+    async createCourse(data: CourseCreate): Promise<CourseResponse | ValidationError> {
+        const result = await this.repository.create(data)
+        return {
+            id: result.id,
+            nameCourse: result.nameCourse,
+            description: result.description,
+            colorTheme: result.colorTheme,
+            icon: result.icon,
+            totalLessons: result.modules.reduce((sum, module) => sum + module._count.lessons, 0),
+            createdAt: result.createdAt,
+            updatedAt: result.updatedAt,
+        }
     }
 
-    async updateCourse(id: number, data: Course): Promise<Course | Error> {
-        return await this.repository.update(id, data)
+    async updateCourse(id: number, data: CourseCreate): Promise<CourseResponse | Error> {
+        const result = await this.repository.update(id, data)
+        return {
+            id: result.id,
+            nameCourse: result.nameCourse,
+            description: result.description,
+            colorTheme: result.colorTheme,
+            icon: result.icon,
+            totalLessons: result.modules.reduce((sum, module) => sum + module._count.lessons, 0),
+            createdAt: result.createdAt,
+            updatedAt: result.updatedAt,
+        }
     }
 
     async deleteCourse(id: number): Promise<string | Error> {
