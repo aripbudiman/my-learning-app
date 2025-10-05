@@ -77,3 +77,13 @@ export const courseController = new Elysia({ prefix: '/api/courses' })
             },
         }
     )
+    .get(
+        '/with-batch',
+        async ({ courseService, query }) => {
+            const response = await courseService.getCourseWithBatch(query)
+            return wrapResponse(response, 200, 'Get course with batch successfully')
+        },
+        {
+            query: querySchema,
+        }
+    )

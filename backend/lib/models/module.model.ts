@@ -3,6 +3,9 @@ import { DifficultyLevel } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 export interface Modules {
+    _count?: {
+        lessons: number
+    }
     id?: number
     orderIndex: number
     courseId: number | null

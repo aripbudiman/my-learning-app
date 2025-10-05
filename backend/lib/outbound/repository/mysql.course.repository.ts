@@ -1,22 +1,11 @@
-import { Course, CourseCreate } from '@lib/models/course.model'
 import database from '@lib/configs/database'
+import { Course, CourseCreate } from '@lib/models/course.model'
 import { CoursePort } from '@lib/outbound/course.port'
 
 export class MySqlCourseRepository implements CoursePort {
     async create(data: CourseCreate): Promise<Course> {
         const course = await database.courses.create({
             data: { ...data },
-            include: {
-                modules: {
-                    select: {
-                        _count: {
-                            select: {
-                                lessons: true,
-                            },
-                        },
-                    },
-                },
-            },
         })
         return course as Course
     }
@@ -25,17 +14,6 @@ export class MySqlCourseRepository implements CoursePort {
         const course = await database.courses.update({
             where: { id },
             data: { ...data },
-            include: {
-                modules: {
-                    select: {
-                        _count: {
-                            select: {
-                                lessons: true,
-                            },
-                        },
-                    },
-                },
-            },
         })
         return course as Course
     }
@@ -48,18 +26,10 @@ export class MySqlCourseRepository implements CoursePort {
         const course = await database.courses.findUnique({
             where: { id },
             include: {
-                modules: {
-                    select: {
-                        _count: {
-                            select: {
-                                lessons: true,
-                            },
-                        },
-                    },
-                },
+                modules: true,
             },
         })
-        return course
+        return course as unknown as Course
     }
 
     async findAll(limit = 10, page = 1): Promise<Course[]> {
@@ -74,6 +44,13 @@ export class MySqlCourseRepository implements CoursePort {
                 icon: true,
                 modules: {
                     select: {
+                        id: true,
+                        batchTitle: true,
+                        description: true,
+                        difficultyLevel: true,
+                        originalPrice: true,
+                        salePrice: true,
+                        topics: true,
                         _count: {
                             select: {
                                 lessons: true,
@@ -83,7 +60,7 @@ export class MySqlCourseRepository implements CoursePort {
                 },
             },
         })
-        return courses
+        return courses as unknown as Course[]
     }
 
     async count(): Promise<number> {

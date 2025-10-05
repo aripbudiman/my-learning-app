@@ -1,12 +1,35 @@
+import { DifficultyLevel } from '@prisma/client'
 import { t } from 'elysia'
+import { Modules } from './module.model'
 
 export interface Course {
+    modules: Modules[]
     id: number
     nameCourse: string
     description: string
     icon: string
     colorTheme: string
-    modules: { _count: { lessons: number } }[]
+    totalLessons?: number
+    createdAt?: Date
+    updatedAt?: Date
+}
+
+export interface CourseWithModules {
+    id: number
+    nameCourse: string
+    description: string
+    icon: string
+    colorTheme: string
+    modules: {
+        id: number
+        batchTitle: string
+        description: string
+        difficultyLevel: DifficultyLevel
+        originalPrice: string
+        salePrice: string
+        topics: string
+        _count: { lessons: number }
+    }[]
     createdAt?: Date
     updatedAt?: Date
 }
@@ -19,9 +42,28 @@ export interface CourseResponse {
     description: string
     icon: string
     colorTheme: string
-    totalLessons: number
+    totalLessons?: number | null
     createdAt?: Date
     updatedAt?: Date
+}
+
+export interface CourseWithBatchResponse {
+    id: number
+    nameCourse: string
+    description: string
+    icon: string
+    colorTheme: string
+    totalBatches: number
+    modules: {
+        id: number
+        batchTitle: string
+        description: string
+        totalLessons: number
+        difficultyLevel: DifficultyLevel
+        originalPrice: string
+        salePrice: string
+        topics: string[]
+    }[]
 }
 
 export interface Query {
@@ -45,7 +87,7 @@ export const courseResponseSchema = t.Object({
     description: t.String(),
     icon: t.Optional(t.String()),
     colorTheme: t.Optional(t.String()),
-    totalLessons: t.Integer(),
+    totalLessons: t.Optional(t.Integer()),
     createdAt: t.Optional(t.Date()),
     updatedAt: t.Optional(t.Date()),
 })
