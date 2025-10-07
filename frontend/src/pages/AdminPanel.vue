@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar.vue'
 import BoxAdmin from '../templates/BoxAdmin.vue'
 import CourseCard from '../components/CourseCard.vue'
 import FormCourse from '../templates/FormCourse.vue'
+import FormBatch from '../templates/FormBatch.vue'
 import QuickActions from '../components/QuickActions.vue'
 import ActivityItem from '../components/ActivityItem.vue'
 import CourseWithBatches from '../components/CourseWithBatches.vue'
@@ -14,15 +15,25 @@ import 'mosha-vue-toastify/dist/style.css'
 
 const tab = ref('overview')
 const courses = ref([])
-const page = ref(1)
-const limit = ref(10)
+const page = ref({
+    course: 1,
+    batch: 1,
+    lesson: 1,
+})
+const limit = ref({
+    course: 10,
+    batch: 10,
+    lesson: 10,
+})
 const showFormCourse = ref(false)
 const formCourseRef = ref(null)
+const showFormBatch = ref(false)
+const formBatchRef = ref(null)
 const url = import.meta.env.VITE_API_URL
 
 const getCourses = async () => {
     try {
-        const response = await axios.get(`${url}/api/courses?limit=${limit.value}&page=${page.value}`)
+        const response = await axios.get(`${url}/api/courses?limit=${limit.value.course}&page=${page.value.course}`)
         courses.value = response.data.data
     } catch (error) {
         console.error('Error fetching courses:', error)
@@ -31,7 +42,7 @@ const getCourses = async () => {
 }
 
 const loadMore = () => {
-    limit.value += 10
+    limit.value.course += 10
     getCourses()
 }
 
@@ -132,6 +143,107 @@ const handleFormCourseClose = () => {
     formCourseRef.value?.resetForm()
 }
 
+const handleShowFormBatch = () => {
+    showFormBatch.value = true
+}
+
+const handleFormBatchSubmit = async (formData) => {
+    await axios
+        .post(`${url}/api/modules`, formData)
+        .then((response) => {
+            createToast('Batch created successfully', {
+                type: 'success',
+                hideProgressBar: 'false',
+                showIcon: 'true',
+            })
+            getBatches()
+            showFormBatch.value = false
+            formBatchRef.value?.resetForm()
+        })
+        .catch((error) => {
+            console.error('Error creating batch:', error)
+            createToast('Error creating batch', {
+                type: 'danger',
+                hideProgressBar: 'false',
+                showIcon: 'true',
+            })
+        })
+}
+
+const handleFormBatchUpdate = async (formData) => {
+    const { id, ...payload } = formData
+    await axios
+        .put(`${url}/api/modules/${id}`, payload)
+        .then((response) => {
+            createToast('Batch updated successfully', {
+                type: 'success',
+                hideProgressBar: 'false',
+                showIcon: 'true',
+            })
+            getBatches()
+            showFormBatch.value = false
+            formBatchRef.value?.resetForm()
+        })
+        .catch((error) => {
+            console.error('Error updating batch:', error)
+            createToast('Error updating batch', {
+                type: 'danger',
+                hideProgressBar: 'false',
+                showIcon: 'true',
+            })
+        })
+}
+
+const handleFormBatchCancel = () => {
+    showFormBatch.value = false
+    formBatchRef.value?.resetForm()
+}
+
+const handleFormBatchClose = () => {
+    showFormBatch.value = false
+    formBatchRef.value?.resetForm()
+}
+
+const handleEditBatch = (batch) => {
+    showFormBatch.value = true
+    nextTick(() => {
+        if (formBatchRef.value) {
+            formBatchRef.value.setFormData({
+                id: batch.id,
+                courseId: batch.courseId,
+                batchTitle: batch.batchTitle,
+                orderIndex: 0,
+                description: batch.description,
+                topics: batch.topics,
+                difficultyLevel: batch.difficultyLevel,
+                originalPrice: batch.originalPrice,
+                salePrice: batch.salePrice,
+            })
+        }
+    })
+}
+
+const handleDeleteBatch = async (batch) => {
+    await axios
+        .delete(`${url}/api/modules/${batch.id}`)
+        .then((response) => {
+            createToast('Batch deleted successfully', {
+                type: 'success',
+                hideProgressBar: 'false',
+                showIcon: 'true',
+            })
+            getBatches()
+        })
+        .catch((error) => {
+            console.error('Error deleting batch:', error)
+            createToast('Error deleting batch', {
+                type: 'danger',
+                hideProgressBar: 'false',
+                showIcon: 'true',
+            })
+        })
+}
+
 const handleQuickAction = (action) => {
     if (action === 'add-course') {
         handleShowFormCourse()
@@ -146,39 +258,18 @@ const recentActivities = ref([
 ])
 
 // Mock data for batches - replace with actual API call
-const coursesWithBatches = ref([
-    {
-        id: 1,
-        nameCourse: 'HTML & CSS',
-        icon: '🌐',
-        colorTheme: 'linear-gradient(to right, #fb923c, #ef4444)',
-        batches: [
-            {
-                id: 1,
-                batchTitle: 'Batch I - HTML Fundamentals',
-                description: 'Master the basics of HTML structure and semantic elements',
-                totalLessons: 12,
-                duration: '4 hours',
-                difficultyLevel: 'Beginner',
-                salePrice: 299000,
-                topics: ['HTML Structure', 'Semantic Elements', 'Forms', 'Tables'],
-            },
-            {
-                id: 2,
-                batchTitle: 'Batch II - CSS Basics',
-                description: 'Learn styling with CSS',
-                totalLessons: 15,
-                duration: '5 hours',
-                difficultyLevel: 'Beginner',
-                salePrice: 349000,
-                topics: ['Selectors', 'Box Model', 'Flexbox', 'Grid'],
-            },
-        ],
-    },
-])
+const batches = ref([])
+
+const getBatches = async () => {
+    const response = await axios.get(
+        `${url}/api/courses/with-batch?limit=${limit.value.batch}&page=${page.value.batch}`
+    )
+    batches.value = response.data.data
+}
 
 onMounted(() => {
     getCourses()
+    getBatches()
 })
 </script>
 <template>
@@ -296,19 +387,29 @@ onMounted(() => {
                     <p class="text-slate-600">Create and manage course batches/modules</p>
                 </div>
                 <button
+                    @click="handleShowFormBatch"
                     class="justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 flex items-center space-x-2"
                 >
                     <Icon icon="lucide:plus" width="24" height="24" class="w-4 h-4" />
                     <span>Add New Batch</span>
                 </button>
             </div>
+            <FormBatch
+                v-if="showFormBatch"
+                ref="formBatchRef"
+                :courses="courses"
+                @submit="handleFormBatchSubmit"
+                @update="handleFormBatchUpdate"
+                @cancel="handleFormBatchCancel"
+                @close="handleFormBatchClose"
+            />
             <div class="space-y-8 mt-8">
                 <CourseWithBatches
-                    v-for="course in coursesWithBatches"
-                    :key="course.id"
-                    :course="course"
-                    @edit-batch="(batch) => console.log('Edit batch:', batch)"
-                    @delete-batch="(batch) => console.log('Delete batch:', batch)"
+                    v-for="batch in batches"
+                    :key="batch.id"
+                    :course="batch"
+                    @edit-batch="handleEditBatch"
+                    @delete-batch="handleDeleteBatch"
                 />
             </div>
         </div>

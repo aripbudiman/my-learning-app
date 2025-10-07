@@ -14,6 +14,8 @@ export interface Course {
     updatedAt?: Date
 }
 
+export type SelectCourse = Pick<Course, 'id' | 'nameCourse'>
+
 export interface CourseWithModules {
     id: number
     nameCourse: string

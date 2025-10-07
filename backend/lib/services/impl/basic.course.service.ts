@@ -1,4 +1,11 @@
-import { Course, CourseCreate, CourseResponse, CourseWithBatchResponse, Query } from '@lib/models/course.model'
+import {
+    Course,
+    CourseCreate,
+    CourseResponse,
+    CourseWithBatchResponse,
+    Query,
+    SelectCourse,
+} from '@lib/models/course.model'
 import { Modules } from '@lib/models/module.model'
 import { CoursePort } from '@lib/outbound/course.port'
 import { CourseSvc } from '@lib/services/contract/course.service'
@@ -89,5 +96,8 @@ export class BasicCourseService implements CourseSvc {
             })),
         }))
         return result as CourseWithBatchResponse[]
+    }
+    async getMasterData(): Promise<SelectCourse[]> {
+        return await this.repository.getMasterData()
     }
 }

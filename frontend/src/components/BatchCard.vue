@@ -45,11 +45,11 @@ defineEmits(['edit', 'delete'])
                 </div>
                 <div class="flex items-center space-x-1">
                     <Icon icon="lucide:target" class="w-3 h-3 text-slate-400" />
-                    <span>{{ batch.difficultyLevel }}</span>
+                    <span class="lowercase first-letter:uppercase">{{ batch.difficultyLevel }}</span>
                 </div>
                 <div class="flex items-center space-x-1">
-                    <Icon icon="lucide:dollar-sign" class="w-3 h-3 text-slate-400" />
-                    <span>Rp&nbsp;{{ batch.salePrice?.toLocaleString('id-ID') }}</span>
+                    <Icon icon="fa7-solid:rupiah-sign" class="w-3 h-3 text-slate-400" />
+                    <span>{{ parseFloat(batch.salePrice).toLocaleString('id-ID') }}</span>
                 </div>
             </div>
             <div class="flex flex-wrap gap-1" v-if="batch.topics && batch.topics.length > 0">

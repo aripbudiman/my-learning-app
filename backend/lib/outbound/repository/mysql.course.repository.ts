@@ -1,5 +1,5 @@
 import database from '@lib/configs/database'
-import { Course, CourseCreate } from '@lib/models/course.model'
+import { Course, CourseCreate, SelectCourse } from '@lib/models/course.model'
 import { CoursePort } from '@lib/outbound/course.port'
 
 export class MySqlCourseRepository implements CoursePort {
@@ -66,5 +66,15 @@ export class MySqlCourseRepository implements CoursePort {
     async count(): Promise<number> {
         const count: number = await database.courses.count()
         return count
+    }
+
+    async getMasterData(): Promise<SelectCourse[]> {
+        const courses = await database.courses.findMany({
+            select: {
+                id: true,
+                nameCourse: true,
+            },
+        })
+        return courses as unknown as SelectCourse[]
     }
 }

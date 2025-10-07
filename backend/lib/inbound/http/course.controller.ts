@@ -87,3 +87,7 @@ export const courseController = new Elysia({ prefix: '/api/courses' })
             query: querySchema,
         }
     )
+    .get('/master-data', async ({ courseService }) => {
+        const response = await courseService.getMasterData()
+        return wrapResponse(response, 200, 'Get master data successfully')
+    })

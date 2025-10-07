@@ -1,4 +1,4 @@
-import { CourseCreate, CourseResponse, CourseWithBatchResponse, Query } from '@models/course.model'
+import { CourseCreate, CourseResponse, CourseWithBatchResponse, Query, SelectCourse } from '@models/course.model'
 import { ValidationError } from 'elysia'
 
 export interface CourseSvc {
@@ -8,4 +8,5 @@ export interface CourseSvc {
     getCourse(id: number): Promise<CourseResponse | Error | null>
     getAllCourses(query: Query): Promise<CourseResponse[]>
     getCourseWithBatch(query: Query): Promise<CourseWithBatchResponse[] | Error | null>
+    getMasterData(): Promise<SelectCourse[]>
 }
