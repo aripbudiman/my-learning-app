@@ -149,7 +149,11 @@ const handleShowFormBatch = () => {
 
 const handleFormBatchSubmit = async (formData) => {
     await axios
-        .post(`${url}/api/modules`, formData)
+        .post(`${url}/api/modules`, {
+            ...formData,
+            originalPrice: formData.originalPrice.toString(),
+            salePrice: formData.salePrice.toString(),
+        })
         .then((response) => {
             createToast('Batch created successfully', {
                 type: 'success',
@@ -173,7 +177,11 @@ const handleFormBatchSubmit = async (formData) => {
 const handleFormBatchUpdate = async (formData) => {
     const { id, ...payload } = formData
     await axios
-        .put(`${url}/api/modules/${id}`, payload)
+        .put(`${url}/api/modules/${id}`, {
+            ...payload,
+            originalPrice: payload.originalPrice.toString(),
+            salePrice: payload.salePrice.toString(),
+        })
         .then((response) => {
             createToast('Batch updated successfully', {
                 type: 'success',
@@ -205,6 +213,7 @@ const handleFormBatchClose = () => {
 }
 
 const handleEditBatch = (batch) => {
+    console.log('batch', batch)
     showFormBatch.value = true
     nextTick(() => {
         if (formBatchRef.value) {
@@ -214,7 +223,7 @@ const handleEditBatch = (batch) => {
                 batchTitle: batch.batchTitle,
                 orderIndex: 0,
                 description: batch.description,
-                topics: batch.topics,
+                topics: batch.topics.join(','),
                 difficultyLevel: batch.difficultyLevel,
                 originalPrice: batch.originalPrice,
                 salePrice: batch.salePrice,

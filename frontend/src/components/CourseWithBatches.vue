@@ -31,7 +31,7 @@ defineEmits(['editBatch', 'deleteBatch'])
                     v-for="batch in course.modules"
                     :key="batch.id"
                     :batch="batch"
-                    @edit="$emit('editBatch', batch)"
+                    @edit="$emit('editBatch', { ...batch, courseId: course.id })"
                     @delete="$emit('deleteBatch', batch)"
                 />
             </div>

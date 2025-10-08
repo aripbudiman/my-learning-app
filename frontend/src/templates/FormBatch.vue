@@ -44,7 +44,7 @@ const formData = ref<BatchFormData>({
     orderIndex: 0,
     description: '',
     topics: '',
-    difficultyLevel: 'Beginner',
+    difficultyLevel: 'BEGINNER',
     originalPrice: 0,
     salePrice: 0,
 })
@@ -78,7 +78,7 @@ const resetForm = () => {
         orderIndex: 0,
         description: '',
         topics: '',
-        difficultyLevel: 'Beginner',
+        difficultyLevel: 'BEGINNER',
         originalPrice: 0,
         salePrice: 0,
     }
@@ -190,9 +190,9 @@ defineExpose({
                                 id="difficultyLevel"
                                 class="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
+                                <option value="BEGINNER">Beginner</option>
+                                <option value="INTERMEDIATE">Intermediate</option>
+                                <option value="ADVANCED">Advanced</option>
                             </select>
                         </div>
                         <div>
