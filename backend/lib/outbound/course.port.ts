@@ -1,4 +1,4 @@
-import { Course, CourseCreate, SelectCourse } from '@lib/models/course.model'
+import { Course, CourseCreate, CourseWithLessonsRaw, SelectCourse } from '@lib/models/course.model'
 
 export interface CoursePort {
     create(data: CourseCreate): Promise<Course>
@@ -8,4 +8,5 @@ export interface CoursePort {
     findAll(limit: number, page: number): Promise<Course[]>
     count(): Promise<number>
     getMasterData(): Promise<SelectCourse[]>
+    getCourseWithLessons(limit: number, page: number): Promise<CourseWithLessonsRaw[]>
 }

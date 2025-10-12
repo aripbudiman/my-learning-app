@@ -3,6 +3,7 @@ import {
     CourseCreate,
     CourseResponse,
     CourseWithBatchResponse,
+    CourseWithLessonsResponse,
     Query,
     SelectCourse,
 } from '@lib/models/course.model'
@@ -99,5 +100,30 @@ export class BasicCourseService implements CourseSvc {
     }
     async getMasterData(): Promise<SelectCourse[]> {
         return await this.repository.getMasterData()
+    }
+
+    async getCourseWithLessons(query: Query): Promise<CourseWithLessonsResponse[] | Error | null> {
+        const courses = await this.repository.getCourseWithLessons(query.limit, query.page)
+        const data = courses.map((course) => ({
+            id: course.id,
+            nameCourse: course.nameCourse,
+            description: course.description,
+            icon: course.icon,
+            colorTheme: course.colorTheme,
+            totalLessons: course.modules.reduce((sum: number, module) => sum + module._count.lessons, 0),
+            totalBatches: course.modules.length,
+            modules: course.modules.map((module) => ({
+                id: module.id,
+                batchTitle: module.batchTitle,
+                description: module.description,
+                totalLessons: module._count?.lessons,
+                difficultyLevel: module.difficultyLevel,
+                originalPrice: module.originalPrice.toString(),
+                salePrice: module.salePrice.toString(),
+                topics: module.topics.split(','),
+                lessons: module.lessons,
+            })),
+        }))
+        return data as CourseWithLessonsResponse[]
     }
 }

@@ -1,5 +1,5 @@
 import database from '@lib/configs/database'
-import { Course, CourseCreate, SelectCourse } from '@lib/models/course.model'
+import { Course, CourseCreate, CourseWithLessonsRaw, SelectCourse } from '@lib/models/course.model'
 import { CoursePort } from '@lib/outbound/course.port'
 
 export class MySqlCourseRepository implements CoursePort {
@@ -76,5 +76,30 @@ export class MySqlCourseRepository implements CoursePort {
             },
         })
         return courses as unknown as SelectCourse[]
+    }
+
+    async getCourseWithLessons(limit: number, page: number): Promise<CourseWithLessonsRaw[]> {
+        const courses = await database.courses.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+                _count: {
+                    select: {
+                        modules: true,
+                    },
+                },
+                modules: {
+                    include: {
+                        _count: {
+                            select: {
+                                lessons: true,
+                            },
+                        },
+                        lessons: true,
+                    },
+                },
+            },
+        })
+        return courses as unknown as CourseWithLessonsRaw[]
     }
 }

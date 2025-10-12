@@ -1,6 +1,13 @@
 import Elysia, { t } from 'elysia'
 import { courseService } from '@lib/configs/registry'
-import { Course, courseSchema, courseResponseSchema, paramsSchema, querySchema } from '@lib/models/course.model'
+import {
+    Course,
+    courseSchema,
+    courseResponseSchema,
+    courseWithLessonsResponseSchema,
+    paramsSchema,
+    querySchema,
+} from '@lib/models/course.model'
 import { wrapResponse } from '@lib/utils/response'
 import { createResponseSchema } from '@lib/utils/schema'
 
@@ -91,3 +98,17 @@ export const courseController = new Elysia({ prefix: '/api/courses' })
         const response = await courseService.getMasterData()
         return wrapResponse(response, 200, 'Get master data successfully')
     })
+    .get(
+        '/with-lessons',
+        async ({ courseService, query }) => {
+            const response = await courseService.getCourseWithLessons(query)
+            return wrapResponse(response, 200, 'Get course with lessons successfully')
+        },
+        {
+            query: querySchema,
+            response: {
+                200: createResponseSchema(t.Array(courseWithLessonsResponseSchema)),
+                400: createResponseSchema(t.Null()),
+            },
+        }
+    )
