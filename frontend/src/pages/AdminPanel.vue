@@ -422,7 +422,175 @@ onMounted(() => {
                 />
             </div>
         </div>
-        <div id="tab-lessons" v-if="tab === 'lessons'"></div>
+        <div id="tab-lessons" v-if="tab === 'lessons'">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Lesson Management</h2>
+                        <p class="text-slate-600">Create and manage individual lessons</p>
+                    </div>
+                    <button
+                        class="justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 flex items-center space-x-2"
+                    >
+                        <Icon icon="lucide:plus" width="24" height="24" class="w-4 h-4" />
+                        <span>Add New Lesson</span>
+                    </button>
+                </div>
+                <div class="space-y-8 mt-8">
+                    <div class="rounded-xl border bg-card text-card-foreground shadow">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-gradient-to-r from-orange-400 to-red-500 flex items-center justify-center text-xl"
+                                >
+                                    🌐
+                                </div>
+                                <div>
+                                    <div class="font-semibold leading-none tracking-tight">HTML &amp; CSS</div>
+                                    <div class="text-sm text-muted-foreground">5 lessons across 4 batches</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <div class="space-y-6">
+                                <div class="rounded-xl bg-card text-card-foreground shadow border border-slate-200">
+                                    <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <div class="font-semibold tracking-tight text-lg">
+                                                    Batch I - HTML Fundamentals
+                                                </div>
+                                                <div class="text-sm text-muted-foreground">3 lessons</div>
+                                            </div>
+                                            <button
+                                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
+                                            >
+                                                <Icon icon="lucide:plus" width="24" height="24" class="w-4 h-4 mr-2" />
+                                                Add Lesson
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 pt-0">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div
+                                                v-for="i in 3"
+                                                :key="i"
+                                                class="rounded-xl bg-card text-card-foreground shadow border border-slate-100 hover:shadow-md transition-shadow"
+                                            >
+                                                <div class="p-4">
+                                                    <div class="flex items-start justify-between mb-2">
+                                                        <div class="flex-1">
+                                                            <h4 class="font-medium text-slate-900 mb-1">
+                                                                Introduction to HTML
+                                                            </h4>
+                                                            <p class="text-sm text-slate-600 mb-2 line-clamp-2">
+                                                                Learn the basic structure of HTML documents
+                                                            </p>
+                                                            <div
+                                                                class="flex items-center space-x-3 text-xs text-slate-500"
+                                                            >
+                                                                <div
+                                                                    class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 capitalize"
+                                                                >
+                                                                    html
+                                                                </div>
+                                                                <div class="flex items-center space-x-1">
+                                                                    <Icon
+                                                                        icon="lucide:award"
+                                                                        width="12"
+                                                                        height="12"
+                                                                        class="w-3 h-3"
+                                                                        aria-hidden="true"
+                                                                    />
+                                                                    <span>50 pts</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex space-x-1 ml-2">
+                                                            <button
+                                                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
+                                                            >
+                                                                <Icon
+                                                                    icon="lucide:square-pen"
+                                                                    width="12"
+                                                                    height="12"
+                                                                    class="w-3 h-3"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            </button>
+                                                            <button
+                                                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
+                                                            >
+                                                                <Icon
+                                                                    icon="lucide:trash-2"
+                                                                    width="12"
+                                                                    height="12"
+                                                                    class="w-3 h-3 text-red-500"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="bg-slate-50 rounded p-2 mt-2">
+                                                        <p class="text-xs text-slate-600 line-clamp-2">
+                                                            <Icon
+                                                                icon="lucide:code"
+                                                                width="12"
+                                                                height="12"
+                                                                class="w-3 h-3 inline mr-1"
+                                                                aria-hidden="true"
+                                                            />
+                                                            Create your first HTML document with a heading and
+                                                            paragraph.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="rounded-xl bg-card text-card-foreground shadow border border-slate-200">
+                                    <div class="flex flex-col space-y-1.5 p-6 pb-3">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <div class="font-semibold tracking-tight text-lg">
+                                                    Batch III - Advanced CSS
+                                                </div>
+                                                <div class="text-sm text-muted-foreground">0 lessons</div>
+                                            </div>
+                                            <button
+                                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input shadow-sm hover:bg-accent hover:text-accent-foreground h-8 rounded-md px-3 text-xs"
+                                            >
+                                                <Icon
+                                                    icon="lucide:plus"
+                                                    width="24"
+                                                    height="24"
+                                                    class="w-4 h-4 mr-2"
+                                                    aria-hidden="true"
+                                                />
+                                                Add Lesson
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 pt-0">
+                                        <div class="text-center py-6">
+                                            <Icon
+                                                icon="lucide:circle-play"
+                                                width="48"
+                                                height="48"
+                                                class="w-12 h-12 text-slate-400 mx-auto mb-3"
+                                                aria-hidden="true"
+                                            />
+                                            <p class="text-slate-500">No lessons created for this batch yet</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
