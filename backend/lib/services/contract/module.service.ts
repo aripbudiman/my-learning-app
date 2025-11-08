@@ -1,4 +1,4 @@
-import { ModuleCreate, Modules, QuerySchema } from '@models/module.model'
+import { ModuleCreate, Modules, QuerySchema, SelectModules } from '@models/module.model'
 
 export interface ModuleSvc {
     createModule(data: ModuleCreate): Promise<Modules>
@@ -6,4 +6,5 @@ export interface ModuleSvc {
     deleteModule(id: number): Promise<string>
     getModule(id: number): Promise<Modules | null>
     getAllModules(query: QuerySchema): Promise<Modules[]>
+    getMasterData(id: number): Promise<SelectModules[]>
 }

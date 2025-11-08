@@ -19,6 +19,8 @@ export interface Modules {
     updatedAt?: Date
 }
 
+export type SelectModules = Pick<Modules, 'id' | 'batchTitle'>
+
 export interface ModuleRepository {
     id?: number
     orderIndex: number

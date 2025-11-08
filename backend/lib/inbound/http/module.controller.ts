@@ -77,3 +77,13 @@ export const moduleController = new Elysia({ prefix: '/api/modules' })
             },
         }
     )
+    .get(
+        '/by-course/:id',
+        async ({ params, moduleService }) => {
+            const response = await moduleService.getMasterData(params.id)
+            return wrapResponse(response, 200, 'Get modules by course successfully')
+        },
+        {
+            params: paramsSchema,
+        }
+    )

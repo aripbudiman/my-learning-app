@@ -441,7 +441,7 @@ onMounted(() => {
                         <span>Add New Lesson</span>
                     </button>
                 </div>
-                <FormLesson @cancel="handleFormLessonClose" v-if="showFormLesson" ref="formLessonRef">
+                <FormLesson @cancel="handleFormLessonClose" v-if="showFormLesson">
                 </FormLesson>
                 <div class="space-y-8 mt-8">
                     <CourseWithLessons v-for="course in coursesWithLessons" :key="course.id" :course="course"

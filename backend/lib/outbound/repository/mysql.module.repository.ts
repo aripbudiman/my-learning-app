@@ -1,6 +1,7 @@
 import { ModulePort } from '../module.port'
 import database from '@lib/configs/database'
 import { ModuleRepositoryCreate, ModuleRepository } from '@lib/models/module.model'
+import { SelectModules } from '@lib/models/module.model'
 
 export class MysqlModuleRepository implements ModulePort {
     async create(data: ModuleRepositoryCreate): Promise<ModuleRepository> {
@@ -28,6 +29,19 @@ export class MysqlModuleRepository implements ModulePort {
             take: limit,
         })
         return modules
+    }
+
+    async getByCourseId(courseId: number): Promise<SelectModules[]> {
+        const modules = await database.modules.findMany({
+            select: {
+                id: true,
+                batchTitle: true,
+            },
+            where: {
+                courseId: courseId,
+            },
+        })
+        return modules as unknown as SelectModules[]
     }
 
     async count(): Promise<number> {

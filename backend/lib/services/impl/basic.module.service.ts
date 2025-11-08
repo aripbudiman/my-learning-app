@@ -1,6 +1,6 @@
 import { ModuleSvc } from '@lib/services/contract/module.service'
 import { ModulePort } from '@lib/outbound/module.port'
-import { ModuleCreate, Modules, QuerySchema, ModuleRepositoryCreate } from '@models/module.model'
+import { ModuleCreate, Modules, QuerySchema, ModuleRepositoryCreate, SelectModules } from '@models/module.model'
 import { Decimal } from '@prisma/client/runtime/library'
 
 export class BasicModuleService implements ModuleSvc {
@@ -56,5 +56,10 @@ export class BasicModuleService implements ModuleSvc {
             originalPrice: module.originalPrice.toString(),
             salePrice: module.salePrice.toString(),
         }))
+    }
+
+    async getMasterData(id: number): Promise<SelectModules[]> {
+        const data = await this.repository.getByCourseId(id)
+        return data
     }
 }
